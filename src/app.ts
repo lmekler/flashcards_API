@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import deckRouter from "./api/v1/routes/deckRoutes";
 import adminRoutes from "./api/v1/routes/adminRoutes";
+import userRoutes from "./api/v1/routes/userRoutes";
 
 // Initialize Express application
 const app: Express = express();
@@ -20,6 +21,9 @@ app.use(express.json());
 
 // Route handler for decks
 app.use("/api/v1/decks", deckRouter);
+
+// Route handler for users
+app.use("/api/v1/users", userRoutes);
 
 // Route handler for admins
 app.use("/api/v1/admin", adminRoutes);
