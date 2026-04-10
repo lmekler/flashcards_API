@@ -1,4 +1,5 @@
 import express, { Express } from "express";
+import deckRouter from "./api/v1/routes/deckRoutes";
 
 // Initialize Express application
 const app: Express = express();
@@ -12,5 +13,11 @@ app.get("/api/v1/health", (req, res) => {
         version: "1.0.0",
     });
 });
+
+// Body parsing middleware
+app.use(express.json());
+
+// Route handler for decks
+app.use("/api/v1/decks", deckRouter);
 
 export default app;
