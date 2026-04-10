@@ -4,14 +4,14 @@ import { createFlashcard, getFlashcard, getAllFlashcards,
 
 const flashcardRouter: Router = express.Router({ mergeParams: true });
 
-flashcardRouter.post("/flashcards", createFlashcard);
+flashcardRouter.post("/", createFlashcard);
 
-flashcardRouter.get("/flashcards/:cardId", getFlashcard);
+flashcardRouter.get("/:cardId", getFlashcard);
 
-flashcardRouter.get("/flashcards", getAllFlashcards);
+flashcardRouter.get("/", getAllFlashcards);
 
-flashcardRouter.put("/flashcards/:cardId", updateFlashcard);
+flashcardRouter.put("/:cardId", updateFlashcard);
 
-flashcardRouter.delete("/flashcards/:cardId", deleteFlashcard);
+flashcardRouter.delete("/:cardId", deleteFlashcard);
 
 export default flashcardRouter;

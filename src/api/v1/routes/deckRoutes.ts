@@ -5,17 +5,17 @@ import { createDeck, getDeck, getAllDecks,
 
 const deckRouter: Router = express.Router();
 
-deckRouter.post("/decks", createDeck);
+deckRouter.post("/", createDeck);
 
-deckRouter.get("/decks/:deckId", getDeck);
+deckRouter.get("/:deckId", getDeck);
 
-deckRouter.get("/decks", getAllDecks);
+deckRouter.get("/", getAllDecks);
 
-deckRouter.put("/decks/:deckId", updateDeck);
+deckRouter.put("/:deckId", updateDeck);
 
-deckRouter.delete("/decks/:deckId", deleteDeck);
+deckRouter.delete("/:deckId", deleteDeck);
 
 // Mount cardRouter under deckRouter
-deckRouter.use('/:deckId', cardRouter);
+deckRouter.use('/:deckId/flashcards', cardRouter);
 
 export default deckRouter;

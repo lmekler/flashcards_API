@@ -18,6 +18,6 @@ app.get("/api/v1/health", (req, res) => {
 app.use(express.json());
 
 // Route handler for decks
-app.use("/api/v1", deckRouter);
+app.use("/api/v1/decks", deckRouter);
 
 export default app;
