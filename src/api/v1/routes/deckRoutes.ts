@@ -6,12 +6,12 @@ const deckRouter: Router = express.Router();
 
 deckRouter.post("/decks", createDeck);
 
-deckRouter.get("/decks/:id", getDeck);
+deckRouter.get("/decks/:deckId", getDeck);
 
 deckRouter.get("/decks", getAllDecks);
 
-deckRouter.put("/decks/:id", updateDeck);
+deckRouter.put("/decks/:deckId", updateDeck);
 
-deckRouter.delete("/decks/:id", deleteDeck);
+deckRouter.delete("/decks/:deckId", deleteDeck);
 
 export default deckRouter;

@@ -44,8 +44,8 @@ export const getDeck = async (req: Request,
 {
     try 
     {
-        const id: string = req.params.id.toString();
-        const deck = await getDeckService(id);
+        const deckId: string = req.params.deckId.toString();
+        const deck = await getDeckService(deckId);
         
         res.status(HTTP_STATUS.OK).json
         (
@@ -80,14 +80,14 @@ export const updateDeck = async (req: Request,
 {
     try 
     {
-        const id: string = req.params.id.toString();
+        const deckId: string = req.params.deckId.toString();
         const {
             description
         }: {
             description: string;
         } = req.body;
         
-        const updatedDeck = await updateDeckService(id, { description });
+        const updatedDeck = await updateDeckService(deckId, { description });
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(updatedDeck, "Deck updated successfully")
@@ -104,8 +104,8 @@ export const deleteDeck = async (req: Request,
 {
     try 
     {
-        const id: string = req.params.id.toString();
-        await deleteDeckService(id);
+        const deckId: string = req.params.deckId.toString();
+        await deleteDeckService(deckId);
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(null, "Deck deleted successfully")
