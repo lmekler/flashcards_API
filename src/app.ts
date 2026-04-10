@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import deckRouter from "./api/v1/routes/deckRoutes";
+import errorHandler from "./api/v1/middleware/errorHandler";
 
 // Initialize Express application
 const app: Express = express();
@@ -19,5 +20,8 @@ app.use(express.json());
 
 // Route handler for decks
 app.use("/api/v1/decks", deckRouter);
+
+// Global error handling middleware (MUST be applied last)
+app.use(errorHandler);
 
 export default app;
