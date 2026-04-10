@@ -1,6 +1,8 @@
 import express, { Router } from "express";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
+import { validateRequest } from "../middleware/validate";
+import { flashcardSchemas } from "../validation/flashcardSchemas";
 import { createFlashcard, getFlashcard, getAllFlashcards,
     updateFlashcard, deleteFlashcard } from "../controllers/flashcardController"
 
@@ -12,11 +14,12 @@ flashcardRouter.post("/",
         hasRole: ["user"], 
         allowSameUser: true
     }),
+    validateRequest(flashcardSchemas.create),
     createFlashcard);
 
-flashcardRouter.get("/:cardId", getFlashcard);
+flashcardRouter.get("/:cardId", validateRequest(flashcardSchemas.getById), getFlashcard);
 
-flashcardRouter.get("/", getAllFlashcards);
+flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcards);
 
 flashcardRouter.put("/:cardId", 
     authenticate,
@@ -24,6 +27,7 @@ flashcardRouter.put("/:cardId",
         hasRole: ["user"], 
         allowSameUser: true
     }),
+    validateRequest(flashcardSchemas.update),
     updateFlashcard);
 
 flashcardRouter.delete("/:cardId", 
@@ -32,6 +36,7 @@ flashcardRouter.delete("/:cardId",
         hasRole: ["user"], 
         allowSameUser: true 
     }),
+    validateRequest(flashcardSchemas.delete),
     deleteFlashcard);
 
 export default flashcardRouter;
