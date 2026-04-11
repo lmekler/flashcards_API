@@ -1,8 +1,50 @@
 import Joi, { ObjectSchema } from "joi";
 
-// Deck operation schemas organized by request part
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Deck:
+ *       type: object
+ *       required:
+ *         title
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the deck
+ *           example: "deck_1"
+ *         userId:
+ *           type: string
+ *           description: Owner of the deck
+ *           example: "user_1"
+ *         title:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 100
+ *           description: The title of the deck
+ *           example: "Biology 1115"
+ *         description:
+ *           type: string
+ *           maxLength: 500
+ *           description: The description of the deck
+ *           example: "This deck contains flashcards for Biology 1115 course."
+ *         cardCount:
+ *           type: number
+ *           default: 0
+ *           description: Number of flashcards in this deck
+ *           example: 100
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp for when the deck was created
+ *           example: "2026-04-11T16:00:00Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp for last time the deck was updated
+ *           example: "2026-04-11T16:30:00Z"
+ */
 export const deckSchemas = {
-    // POST /decks - Create new deck
     create: {
         params: Joi.object({
             userId: Joi.string().required().messages({
@@ -23,7 +65,6 @@ export const deckSchemas = {
         })
     },
 
-    // GET /decks/:deckId - Get single deck
     getById: {
         params: Joi.object({
             deckId: Joi.string().required().messages({
@@ -33,7 +74,6 @@ export const deckSchemas = {
         })
     },
 
-    // PUT /decks/:deckId - Update deck
     update: {
         params: Joi.object({
             userId: Joi.string().required().messages({
@@ -52,7 +92,6 @@ export const deckSchemas = {
         }).min(1)
     },
 
-    // DELETE /decks/:deckId - Delete deck
     delete: {
         params: Joi.object({
             userId: Joi.string().required().messages({
@@ -66,7 +105,6 @@ export const deckSchemas = {
         })
     },
 
-    // GET /decks - List decks with filtering
     list: {
         query: Joi.object({
             page: Joi.number().integer().min(1).default(1),
