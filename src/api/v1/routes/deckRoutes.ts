@@ -22,7 +22,7 @@ const deckRouter: Router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               title
+ *               - title
  *             properties:
  *               title:
  *                 type: string

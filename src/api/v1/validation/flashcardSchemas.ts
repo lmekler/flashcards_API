@@ -7,8 +7,8 @@ import Joi, { ObjectSchema } from "joi";
  *     Flashcard:
  *       type: object
  *       required:
- *         question
- *         answer
+ *         - question
+ *         - answer
  *       properties:
  *         id:
  *           type: string

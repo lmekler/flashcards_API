@@ -7,7 +7,9 @@ import Joi, { ObjectSchema } from "joi";
  *     Deck:
  *       type: object
  *       required:
- *         title
+ *         - userId
+ *         - title
+ *         - cardCount
  *       properties:
  *         id:
  *           type: string

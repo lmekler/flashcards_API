@@ -27,8 +27,8 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           schema:
  *             type: object
  *             required: 
- *               question
- *               answer
+ *               - question
+ *               - answer
  *             properties:
  *               question:
  *                 type: string
@@ -266,7 +266,7 @@ flashcardRouter.put("/:cardId",
     validateRequest(flashcardSchemas.update),
     updateFlashcard);
 
-    /**
+/**
  * @openapi
  * /decks/{deckId}/flashcards/{cardId}:
  *   delete:
