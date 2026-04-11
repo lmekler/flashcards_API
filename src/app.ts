@@ -8,6 +8,7 @@ import deckRouter from "./api/v1/routes/deckRoutes";
 import adminRoutes from "./api/v1/routes/adminRoutes";
 import userRoutes from "./api/v1/routes/userRoutes";
 import errorHandler from "./api/v1/middleware/errorHandler";
+import setupSwagger from "./config/swagger";
 
 // Initialize Express application
 const app: Express = express();
@@ -43,6 +44,9 @@ app.use("/api/v1/users", userRoutes);
 
 // Route handler for admins
 app.use("/api/v1/admin", adminRoutes);
+
+// Setup Swagger
+setupSwagger(app);
 
 // Global error handling middleware (MUST be applied last)
 app.use(errorHandler);
