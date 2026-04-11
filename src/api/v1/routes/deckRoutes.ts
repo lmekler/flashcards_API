@@ -44,8 +44,16 @@ const deckRouter: Router = express.Router();
  *               $ref: '#/components/schemas/Deck'
  *       '400':
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       '401':
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 deckRouter.post("/", 
     authenticate,
@@ -74,6 +82,10 @@ deckRouter.post("/",
  *               $ref: '#/components/schemas/Deck'
  *       '404':
  *         description: Deck not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 deckRouter.get("/:deckId", validateRequest(deckSchemas.getById), getDeck);
 
@@ -164,12 +176,28 @@ deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
  *               $ref: '#/components/schemas/Deck'
  *       '400':
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       '401':
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Deck not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 deckRouter.put("/:deckId", 
     authenticate,
@@ -205,10 +233,22 @@ deckRouter.put("/:deckId",
  *                   example: "Deck deleted successfully"
  *       '401':
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Deck not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 deckRouter.delete("/:deckId", 
     authenticate,

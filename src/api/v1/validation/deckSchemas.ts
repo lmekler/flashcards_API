@@ -115,3 +115,17 @@ export const deckSchemas = {
         })
     }
 };
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Error:
+ *       type: object
+ *       required:
+ *         - error
+ *       properties:
+ *         error:
+ *           type: string
+ *           description: Error type or code, followed by a readable error message
+ */
