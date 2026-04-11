@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/lmekler/bed_capstone_project#readme",
   "devDependencies": {
+    "@redocly/cli": "^2.26.0",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/morgan": "^1.9.10",
