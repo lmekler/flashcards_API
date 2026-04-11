@@ -230,7 +230,6 @@ deckRouter.put("/:deckId",
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Deck deleted successfully"
  *       '401':
  *         description: Unauthorized
  *         content:

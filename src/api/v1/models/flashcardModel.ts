@@ -1,6 +1,6 @@
 /**
  * Represents a flashcard in the application.
- * @param id - Unique identifier
+ * @param id - Unique identifier for the flashcard
  * @param question - The question on the flashcard
  * @param answer - The answer on the flashcard
  * @param isMastered - Whether the user has mastered this flashcard

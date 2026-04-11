@@ -15,7 +15,7 @@ import Joi, { ObjectSchema } from "joi";
  *           example: "deck_1"
  *         userId:
  *           type: string
- *           description: Owner of the deck
+ *           description: The user who owns the deck
  *           example: "user_1"
  *         title:
  *           type: string
@@ -31,7 +31,7 @@ import Joi, { ObjectSchema } from "joi";
  *         cardCount:
  *           type: number
  *           default: 0
- *           description: Number of flashcards in this deck
+ *           description:  The number of flashcards in the deck
  *           example: 100
  *         createdAt:
  *           type: string

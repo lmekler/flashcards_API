@@ -18,18 +18,18 @@ import Joi, { ObjectSchema } from "joi";
  *           type: string
  *           minLength: 1
  *           maxLength: 500
- *           description: Question text on front of card
+ *           description: The question on the flashcard
  *           example: "What is the mitochondria?"
  *         answer:
  *           type: string
  *           minLength: 1
  *           maxLength: 1000
- *           description: Answer text on back of card
+ *           description: The answer on the flashcard
  *           example: "The mitochondria is the powerhouse of the cell."
  *         isMastered:
  *           type: boolean
  *           default: false
- *           description: Whether the flashcard is mastered
+ *           description: Whether the user has mastered this flashcard
  *         createdAt:
  *           type: string
  *           format: date-time

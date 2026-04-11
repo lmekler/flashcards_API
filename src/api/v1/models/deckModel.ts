@@ -1,9 +1,9 @@
 /**
  * Represents a deck in the application.
- * @param id - Unique identifier
+ * @param id - Unique identifier for the deck
  * @param userId - The user who owns the deck
  * @param title - The title of the deck
- * @param description - A brief description of the deck
+ * @param description - The description of the deck
  * @param cardCount - The number of flashcards in the deck
  * @param createdAt - Timestamp for when the deck was created
  * @param updatedAt - Timestamp for last time the deck was updated

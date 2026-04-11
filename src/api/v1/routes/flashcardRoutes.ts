@@ -34,18 +34,18 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *                 type: string
  *                 min: 1
  *                 max: 500
- *                 description: The question for the flashcard
+ *                 description: The question on the flashcard
  *                 example: "What is the mitochrondia?"
  *               answer:
  *                 type: string
  *                 min: 1
  *                 max: 1000
- *                 description: The answer for the flashcard
+ *                 description: The answer on the flashcard
  *                 example: "The mitochrondia is the powerhouse of the cell."
  *               isMastered:
  *                 type: boolean
  *                 default: false
- *                 description: Whether the flashcard is mastered
+ *                 description: Whether the user has mastered this flashcard
  *     responses:
  *       '201':
  *         description: Flashcard created successfully
@@ -224,7 +224,7 @@ flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcard
  *               isMastered:
  *                 type: boolean
  *                 default: false
- *                 description: Whether the flashcard is mastered
+ *                 description: Whether the user has mastered this flashcard
  *     responses:
  *       '200':
  *         description: Flashcard updated successfully
@@ -293,7 +293,6 @@ flashcardRouter.put("/:cardId",
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Flashcard deleted successfully"
  *       '401':
  *         description: Unauthorized
  *         content:
