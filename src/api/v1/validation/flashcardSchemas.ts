@@ -1,8 +1,47 @@
 import Joi, { ObjectSchema } from "joi";
 
-// Flashcard operation schemas organized by request part
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Flashcard:
+ *       type: object
+ *       required:
+ *         question
+ *         answer
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the flashcard
+ *           example: "card_1"
+ *         question:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 500
+ *           description: Question text on front of card
+ *           example: "What is the mitochondria?"
+ *         answer:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 1000
+ *           description: Answer text on back of card
+ *           example: "The mitochondria is the powerhouse of the cell."
+ *         isMastered:
+ *           type: boolean
+ *           default: false
+ *           description: Whether the flashcard is mastered
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp for when the flashcard was created
+ *           example: "2026-04-11T16:00:00Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp for last time the flashcard was updated
+ *           example: "2026-04-11T16:30:00Z"
+ */
 export const flashcardSchemas = {
-    // POST /flashcards - Create new flashcard
     create: {
         params: Joi.object({
             deckId: Joi.string().required().messages({
@@ -17,7 +56,6 @@ export const flashcardSchemas = {
         })
     },
 
-    // GET /flashcards/:cardId - Get single flashcard
     getById: {
         params: Joi.object({
             deckId: Joi.string().required().messages({
@@ -31,7 +69,6 @@ export const flashcardSchemas = {
         })
     },
 
-    // GET /flashcards - List flashcards with filtering
     list: {
         params: Joi.object({
             deckId: Joi.string().required().messages({
@@ -47,7 +84,6 @@ export const flashcardSchemas = {
         })
     },
 
-    // PUT /flashcards/:cardId - Update flashcard
     update: {
         params: Joi.object({
             deckId: Joi.string().required().messages({
@@ -64,7 +100,6 @@ export const flashcardSchemas = {
         }).min(1)
     },
 
-    // DELETE /flashcards/:cardId - Delete flashcard
     delete: {
         params: Joi.object({
             deckId: Joi.string().required().messages({
