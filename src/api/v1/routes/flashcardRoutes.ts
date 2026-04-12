@@ -206,7 +206,6 @@ flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcard
  *         application/json:
  *           schema:
  *             type: object
- *             minProperties: 1
  *             properties:
  *               isMastered:
  *                 type: boolean

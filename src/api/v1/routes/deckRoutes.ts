@@ -154,7 +154,6 @@ deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
  *         application/json:
  *           schema:
  *             type: object
- *             minProperties: 1
  *             properties:
  *               description:
  *                 type: string
