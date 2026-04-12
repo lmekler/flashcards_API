@@ -27,6 +27,66 @@
   ],
   "paths": {
     "/decks": {
+      "post": {
+        "summary": "Create a new deck",
+        "tags": [
+          "Decks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "description": "The title of the deck",
+                    "example": "Biology 1115"
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "description": "The description of the deck",
+                    "example": "This deck contains flashcards for Biology 1115 course."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Deck created successfully",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Deck"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "summary": "Get a list of decks with optional filtering",
         "tags": [
@@ -107,6 +167,175 @@
         }
       }
     },
+    "/decks/{deckId}": {
+      "get": {
+        "summary": "Get a deck by ID",
+        "tags": [
+          "Decks"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deckId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deck retrieved successfully",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Deck"
+              }
+            }
+          },
+          "404": {
+            "description": "Deck not found",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a deck by ID",
+        "tags": [
+          "Decks"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deckId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "description": "The description of the deck",
+                    "example": "This deck contains flashcards for Biology 1115 course."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deck updated successfully",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Deck"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "404": {
+            "description": "Deck not found",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a deck by ID",
+        "tags": [
+          "Decks"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deckId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deck deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "404": {
+            "description": "Deck not found",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      }
+    },
     "/decks/{deckId}/flashcards": {
       "post": {
         "summary": "Create a flashcard in a deck",
@@ -136,15 +365,15 @@
                 "properties": {
                   "question": {
                     "type": "string",
-                    "min": 1,
-                    "max": 500,
+                    "minLength": 1,
+                    "maxLength": 500,
                     "description": "The question on the flashcard",
                     "example": "What is the mitochrondia?"
                   },
                   "answer": {
                     "type": "string",
-                    "min": 1,
-                    "max": 1000,
+                    "minLength": 1,
+                    "maxLength": 1000,
                     "description": "The answer on the flashcard",
                     "example": "The mitochrondia is the powerhouse of the cell."
                   },
@@ -376,7 +605,6 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "minProperties": 1,
                 "properties": {
                   "isMastered": {
                     "type": "boolean",
@@ -402,6 +630,69 @@
             "content": {
               "application/json": {
                 "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a flashcard",
+        "tags": [
+          "Flashcards"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "deckId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "cardId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flashcard deleted successfully",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
               }
             }
           },
