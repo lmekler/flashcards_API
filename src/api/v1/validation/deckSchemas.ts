@@ -48,12 +48,6 @@ import Joi, { ObjectSchema } from "joi";
  */
 export const deckSchemas = {
     create: {
-        params: Joi.object({
-            userId: Joi.string().required().messages({
-                "any.required": "User ID is required",
-                "string.empty": "User ID cannot be empty",
-            })
-        }),
         body: Joi.object({
             title: Joi.string().min(1).max(100).required().messages({
                 "any.required": "Title is required",
@@ -78,10 +72,6 @@ export const deckSchemas = {
 
     update: {
         params: Joi.object({
-            userId: Joi.string().required().messages({
-                "any.required": "User ID is required",
-                "string.empty": "User ID cannot be empty",
-            }),
             deckId: Joi.string().required().messages({
                 "any.required": "Deck ID is required",
                 "string.empty": "Deck ID cannot be empty",
@@ -96,10 +86,6 @@ export const deckSchemas = {
 
     delete: {
         params: Joi.object({
-            userId: Joi.string().required().messages({
-                "any.required": "User ID is required",
-                "string.empty": "User ID cannot be empty",
-            }),
             deckId: Joi.string().required().messages({
                 "any.required": "Deck ID is required",
                 "string.empty": "Deck ID cannot be empty",
