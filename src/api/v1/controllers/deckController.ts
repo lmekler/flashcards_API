@@ -30,8 +30,7 @@ export const createDeck = async (req: Request,
             description
         } = req.body;
 
-        // const userId = res.locals.uid as string;
-        const userId = "testUserId";
+        const userId = res.locals.uid as string;
 
         const deckData: DeckData = 
         { 
