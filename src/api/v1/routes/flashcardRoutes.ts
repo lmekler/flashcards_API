@@ -32,14 +32,14 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *             properties:
  *               question:
  *                 type: string
- *                 min: 1
- *                 max: 500
+ *                 minLength: 1
+ *                 maxLength: 500
  *                 description: The question on the flashcard
  *                 example: "What is the mitochrondia?"
  *               answer:
  *                 type: string
- *                 min: 1
- *                 max: 1000
+ *                 minLength: 1
+ *                 maxLength: 1000
  *                 description: The answer on the flashcard
  *                 example: "The mitochrondia is the powerhouse of the cell."
  *               isMastered:
@@ -206,7 +206,6 @@ flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcard
  *         application/json:
  *           schema:
  *             type: object
- *             minProperties: 1
  *             properties:
  *               isMastered:
  *                 type: boolean

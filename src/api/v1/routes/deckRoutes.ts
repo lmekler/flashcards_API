@@ -26,8 +26,8 @@ const deckRouter: Router = express.Router();
  *             properties:
  *               title:
  *                 type: string
- *                 min: 1
- *                 max: 100
+ *                 minLength: 1
+ *                 maxLength: 100
  *                 description: The title of the deck
  *                 example: "Biology 1115"
  *               description:
@@ -154,7 +154,6 @@ deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
  *         application/json:
  *           schema:
  *             type: object
- *             minProperties: 1
  *             properties:
  *               description:
  *                 type: string
