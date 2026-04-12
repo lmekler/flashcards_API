@@ -51,32 +51,27 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *         description: Flashcard created successfully
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Flashcard'
+ *             $ref: '#/components/schemas/Flashcard'
  *       '400':
  *         description: Invalid input
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '401':
  *         description: Unauthorized
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Deck not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  */
 flashcardRouter.post("/", 
     authenticate,
@@ -109,26 +104,22 @@ flashcardRouter.post("/",
  *         description: Flashcard retrieved successfully
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Flashcard'
+ *             $ref: '#/components/schemas/Flashcard'
  *       '401':
  *         description: Unauthorized
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  */
 flashcardRouter.get("/:cardId", validateRequest(flashcardSchemas.getById), getFlashcard);
 
@@ -162,37 +153,33 @@ flashcardRouter.get("/:cardId", validateRequest(flashcardSchemas.getById), getFl
  *         description: Flashcards retrieved successfully
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 flashcards:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Flashcard'
- *                 total:
- *                   type: integer
- *                 page:
- *                   type: integer
- *                 totalPages:
- *                   type: integer
+ *             type: object
+ *             properties:
+ *               flashcards:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/Flashcard'
+ *               total:
+ *                 type: integer
+ *               page:
+ *                 type: integer
+ *               totalPages:
+ *                 type: integer
  *       '401':
  *         description: Unauthorized
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Deck not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  */
 flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcards);
 
@@ -230,32 +217,27 @@ flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcard
  *         description: Flashcard updated successfully
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Flashcard'
+ *             $ref: '#/components/schemas/Flashcard'
  *       '400':
  *         description: Invalid input
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '401':
  *         description: Unauthorized
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  */
 flashcardRouter.put("/:cardId", 
     authenticate,
@@ -288,8 +270,7 @@ flashcardRouter.put("/:cardId",
  *         description: Flashcard deleted successfully
  *         content:
  *           application/json:
- *             schema:
- *               type: object
+ *             type: object
  *               properties:
  *                 message:
  *                   type: string
@@ -297,20 +278,17 @@ flashcardRouter.put("/:cardId",
  *         description: Unauthorized
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '403':
  *         description: Forbidden
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  *       '404':
  *         description: Not found
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *             $ref: '#/components/schemas/Error'
  */
 flashcardRouter.delete("/:cardId", 
     authenticate,
