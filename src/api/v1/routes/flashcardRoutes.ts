@@ -270,9 +270,9 @@ flashcardRouter.put("/:cardId",
  *         content:
  *           application/json:
  *             type: object
- *               properties:
- *                 message:
- *                   type: string
+ *             properties:
+ *               message:
+ *                 type: string
  *       '401':
  *         description: Unauthorized
  *         content:
