@@ -1,4 +1,5 @@
-import { db } from '../../../config/firebaseConfig';
+import { HTTP_STATUS } from '../../../constants/httpConstants';
+import { AppError } from '../errors/errors';
 import { Flashcard } from '../models/flashcardModel';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
@@ -27,10 +28,7 @@ export const createFlashcardService = async (
             createdAt: new Date().toISOString()
         };
 
-        const flashcardDoc = db.collection('decks').doc(deckId).collection('flashcards').doc();
-        flashcardDoc.set(newFlashcard);
-
-        const id = flashcardDoc.id;
+        const id = await createDocument(`decks/${deckId}/flashcards`, newFlashcard);
 
         return { id, ...newFlashcard } as Flashcard;
     } 
@@ -46,8 +44,7 @@ export const getFlashcardService = async (deckId: string,
 {
     try 
     {
-        const doc = await db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId).get();
+        const doc = await getDocumentById(`decks/${deckId}/flashcards`, cardId);
 
         if (!doc) 
         {
@@ -78,9 +75,7 @@ export const getAllFlashcardsService = async (deckId: string): Promise<Flashcard
 {
     try 
     {
-        const doc = db.collection('decks').doc(deckId).collection('flashcards');
-        
-        const snapshot = await doc.get();
+        const snapshot = await getDocuments(`decks/${deckId}/flashcards`);
 
         const flashcards = snapshot.docs.map((doc) => 
         {
@@ -108,9 +103,7 @@ export const updateFlashcardService = async (deckId: string, cardId: string, fla
 {
     try 
     {
-        const doc = db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId);
-        doc.update(flashcardData);
+        const doc = await updateDocument(`decks/${deckId}/flashcards`, cardId, flashcardData);
 
         // Return the updated flashcard
         const updatedFlashcard = await getFlashcardService(deckId, cardId);
@@ -135,9 +128,7 @@ export const deleteFlashcardService = async (deckId: string, cardId: string): Pr
             throw new Error(`Flashcard with ID ${cardId} not found`);
         }
 
-        const doc = db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId);
-        await doc.delete();
+        await deleteDocument(`decks/${deckId}/flashcards`, cardId);
     } 
     catch (error: unknown)
     {
