@@ -28,6 +28,13 @@ export const createFlashcardService = async (
 
     const id = await createDocument(`decks/${deckId}/flashcards`, newFlashcard);
 
+    // update the card count in the deck any time a flashcard is created
+    const cardCount = (await getAllFlashcardsService(deckId)).length;
+    await updateDocument(`decks`, deckId, 
+    { 
+        cardCount: cardCount
+    });
+
     return { id, ...newFlashcard } as Flashcard;
 };
 
@@ -97,4 +104,11 @@ export const deleteFlashcardService = async (deckId: string, cardId: string): Pr
     // Check if flashcard exists before deleting
     await getFlashcardService(deckId, cardId);
     await deleteDocument(`decks/${deckId}/flashcards`, cardId);
+
+    // update the card count in the deck any time a flashcard is deleted
+    const cardCount = (await getAllFlashcardsService(deckId)).length;
+    await updateDocument(`decks`, deckId, 
+    { 
+        cardCount: cardCount
+    });
 }
