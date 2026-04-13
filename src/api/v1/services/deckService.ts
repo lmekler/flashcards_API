@@ -30,14 +30,14 @@ export const createDeckService = async (
     return { id, ...newDeck } as Deck;
 };
 
-export const getDeckService = async (id: string): Promise<Deck | undefined> =>
+export const getDeckService = async (deckId: string): Promise<Deck | undefined> =>
 {
-    const doc = await getDocumentById(COLLECTION, id);
+    const doc = await getDocumentById(COLLECTION, deckId);
 
     if (!doc) 
     {
         throw new AppError(
-            `Deck with ID ${id} not found`,
+            `Deck with ID ${deckId} not found`,
             'DECK_NOT_FOUND', 
             HTTP_STATUS.NOT_FOUND
         );
@@ -79,22 +79,22 @@ export const getAllDecksService = async (): Promise<Deck[]> =>
     return decks;
 };
 
-export const updateDeckService = async (id: string, deckData: 
+export const updateDeckService = async (deckId: string, deckData: 
     { description: string }): Promise<Deck | undefined>  => 
 {
     // Check if deck exists before updating
-    await getDeckService(id);
-    await updateDocument<Deck>(COLLECTION, id, deckData);
+    await getDeckService(deckId);
+    await updateDocument<Deck>(COLLECTION, deckId, deckData);
 
     // Return the updated deck
-    const updatedDeck = await getDeckService(id);
+    const updatedDeck = await getDeckService(deckId);
     updatedDeck!.updatedAt = new Date().toISOString();
     return updatedDeck;
 };
 
-export const deleteDeckService = async (id: string): Promise<void> =>
+export const deleteDeckService = async (deckId: string): Promise<void> =>
 {
     // Check if deck exists before deleting
-    await getDeckService(id);
-    await deleteDocument(COLLECTION, id);
+    await getDeckService(deckId);
+    await deleteDocument(COLLECTION, deckId);
 }
