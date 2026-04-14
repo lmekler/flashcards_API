@@ -1,3 +1,4 @@
+// Internal module imports
 import { db } from "../../../config/firebaseConfig";
 import { FirestoreDataTypes } from "../types/firestore";
 

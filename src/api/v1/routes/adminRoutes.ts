@@ -1,7 +1,10 @@
+// External module imports
 import express from "express";
-import { setCustomClaims } from "../controllers/adminController";
+
+// Internal module imports
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
+import { setCustomClaims } from "../controllers/adminController";
 
 const adminRouter: express.Router = express.Router();
 

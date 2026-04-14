@@ -3,3 +3,7 @@ dist/
 
 # Firebase service account
 bed-flashcards-api-firebase-adminsdk-fbsvc-2bc5c84fa2.json
+
+# Logs
+logs/
+*.log

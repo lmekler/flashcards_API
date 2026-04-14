@@ -1,6 +1,9 @@
+// External module imports
 import { initializeApp, cert, ServiceAccount } from "firebase-admin/app";
 import { getAuth, Auth } from "firebase-admin/auth";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
+
+// Internal module imports
 import serviceAccount from "../../bed-flashcards-api-firebase-adminsdk-fbsvc-2bc5c84fa2.json";
 
 initializeApp({

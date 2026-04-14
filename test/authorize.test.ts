@@ -1,4 +1,7 @@
+// External module imports
 import { Request, Response } from "express";
+
+// Internal module imports
 import isAuthorized from "../src/api/v1/middleware/authorize";
 import { AuthorizationError } from "../src/api/v1/errors/errors";
 

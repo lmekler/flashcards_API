@@ -1,6 +1,8 @@
+// External module imports
 import { Request, Response, NextFunction } from "express";
 import { ObjectSchema } from "joi";
 
+// Internal module imports
 import { MiddlewareFunction } from "../types/express";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 
