@@ -1,11 +1,11 @@
-import { get } from 'node:http';
+// Internal module imports
 import { HTTP_STATUS } from '../../../constants/httpConstants';
 import { AppError } from '../errors/errors';
+import { getDeckService } from "./deckService";
 import { Flashcard } from '../models/flashcardModel';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
-import { getDeckService } from "./deckService";
 
 // Name of the Firestore collection for flashcards
 const COLLECTION = "flashcards";

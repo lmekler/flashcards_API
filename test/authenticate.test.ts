@@ -1,7 +1,10 @@
+// External module imports
 import { Request, Response } from "express";
+
+// Internal module imports
 import authenticate from "../src/api/v1/middleware/authenticate";
-import { auth } from "../src/config/firebaseConfig";
 import { AuthenticationError } from "../src/api/v1/errors/errors";
+import { auth } from "../src/config/firebaseConfig";
 
 // Mock Firebase auth
 jest.mock("../src/config/firebaseConfig", () => ({

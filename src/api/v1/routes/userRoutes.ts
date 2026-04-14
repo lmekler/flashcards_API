@@ -1,8 +1,11 @@
+// External module imports
 import express, { Router } from "express";
-import { getUserDetails } from "../controllers/userController";
+
+// Internal module imports
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import deckRouter from "./deckRoutes";
+import { getUserDetails } from "../controllers/userController";
 
 const userRouter: Router = express.Router();
 

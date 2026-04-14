@@ -1,4 +1,7 @@
+// External module imports
 import request, { Response } from "supertest";
+
+// Internal module imports
 import app from "../src/app";
 
 describe("GET /api/v1/health", () => {

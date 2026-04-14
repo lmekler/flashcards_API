@@ -1,14 +1,17 @@
+// External module imports
 import express, { Express } from "express";
+
+// Internal module imports
 import {
     accessLogger,
     errorLogger,
     consoleLogger,
 } from "./api/v1/middleware/logger";
-import deckRouter from "./api/v1/routes/deckRoutes";
-import adminRoutes from "./api/v1/routes/adminRoutes";
-import userRoutes from "./api/v1/routes/userRoutes";
 import errorHandler from "./api/v1/middleware/errorHandler";
 import setupSwagger from "./config/swagger";
+import adminRoutes from "./api/v1/routes/adminRoutes";
+import userRoutes from "./api/v1/routes/userRoutes";
+import deckRouter from "./api/v1/routes/deckRoutes";
 
 // Initialize Express application
 const app: Express = express();
@@ -36,14 +39,14 @@ app.get("/api/v1/health", (req, res) => {
 // Body parsing middleware
 app.use(express.json());
 
-// Route handler for decks
-app.use("/api/v1/decks", deckRouter);
+// Route handler for admins
+app.use("/api/v1/admin", adminRoutes);
 
 // Route handler for users
 app.use("/api/v1/users", userRoutes);
 
-// Route handler for admins
-app.use("/api/v1/admin", adminRoutes);
+// Route handler for decks
+app.use("/api/v1/decks", deckRouter);
 
 // Setup Swagger
 setupSwagger(app);

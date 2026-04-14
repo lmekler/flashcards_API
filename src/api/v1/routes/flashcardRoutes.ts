@@ -1,4 +1,7 @@
+// External module imports
 import express, { Router } from "express";
+
+// Internal module imports
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { validateRequest } from "../middleware/validate";

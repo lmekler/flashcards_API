@@ -1,9 +1,12 @@
+// External module imports
 import express, { Router } from "express";
+
+// Internal module imports
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
-import cardRouter from "./flashcardRoutes";
 import { validateRequest } from "../middleware/validate";
 import { deckSchemas } from "../validation/deckSchemas";
+import cardRouter from "./flashcardRoutes";
 import { createDeck, getDeck, getAllDecks,
     updateDeck, deleteDeck } from "../controllers/deckController"
 

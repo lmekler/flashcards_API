@@ -1,4 +1,7 @@
+// External module imports
 import fs from "fs";
+
+// Internal module imports
 import { generateSwaggerSpec } from "../src/config/swaggerOptions";
 
 // Get the specs using our shared configuration

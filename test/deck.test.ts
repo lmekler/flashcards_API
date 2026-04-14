@@ -1,5 +1,6 @@
-import * as deckService from '../src/api/v1/services/deckService';
+// Internal module imports
 import * as firestoreRepository from '../src/api/v1/repositories/firestoreRepository';
+import * as deckService from '../src/api/v1/services/deckService';
 import { Deck, DeckData } from '../src/api/v1/models/deckModel';
 
 // Mock the repository module
