@@ -1,8 +1,11 @@
-import { db } from '../../../config/firebaseConfig';
+import { get } from 'node:http';
+import { HTTP_STATUS } from '../../../constants/httpConstants';
+import { AppError } from '../errors/errors';
 import { Flashcard } from '../models/flashcardModel';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
+import { getDeckService } from "./deckService";
 
 // Name of the Firestore collection for flashcards
 const COLLECTION = "flashcards";
@@ -15,133 +18,114 @@ export const createFlashcardService = async (
         isMastered?: boolean;
     }): Promise<Flashcard> => 
 {
-    try 
+    // check if deck exists before creating flashcard
+    await getDeckService(deckId);
+
+    // create a new flashcard with the provided data and 
+    // an initial isMastered value of false if not provided
+    const newFlashcard: Flashcard =
     {
-        // create a new flashcard with the provided data and 
-        // an initial isMastered value of false if not provided
-        const newFlashcard: Flashcard =
-        {
-            question: flashcardData.question,
-            answer: flashcardData.answer,
-            isMastered: flashcardData.isMastered ?? false,
-            createdAt: new Date().toISOString()
-        };
+        question: flashcardData.question,
+        answer: flashcardData.answer,
+        isMastered: flashcardData.isMastered ?? false,
+        createdAt: new Date().toISOString()
+    };
 
-        const flashcardDoc = db.collection('decks').doc(deckId).collection('flashcards').doc();
-        flashcardDoc.set(newFlashcard);
+    const id = await createDocument(`decks/${deckId}/flashcards`, newFlashcard);
 
-        const id = flashcardDoc.id;
+    // update the card count in the deck any time a flashcard is created
+    const cardCount = (await getAllFlashcardsService(deckId)).length;
+    await updateDocument(`decks`, deckId, 
+    { 
+        cardCount: cardCount
+    });
 
-        return { id, ...newFlashcard } as Flashcard;
-    } 
-    catch (error: unknown) 
-    {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to create flashcard: ${errorMessage}`);
-    }
+    return { id, ...newFlashcard } as Flashcard;
 };
 
 export const getFlashcardService = async (deckId: string, 
     cardId: string): Promise<Flashcard | undefined> =>
 {
-    try 
+    // check if deck exists before retrieving flashcard
+    await getDeckService(deckId);
+
+    const doc = await getDocumentById(`decks/${deckId}/flashcards`, cardId);
+
+    if (!doc) 
     {
-        const doc = await db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId).get();
-
-        if (!doc) 
-        {
-            throw new Error(`Flashcard with ID ${cardId} not found`);
-        }
-
-        const data = doc.data();
-
-        const flashcard: Flashcard = {
-            id: doc.id,
-            question: data?.question,
-            answer: data?.answer,
-            isMastered: data?.isMastered,
-            createdAt: data?.createdAt,
-            updatedAt: data?.updatedAt
-        } as Flashcard;
-
-        return flashcard;
-    } 
-    catch (error: unknown) 
-    {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to retrieve the flashcard: ${errorMessage}`);
+        throw new AppError(
+            `Flashcard with ID ${cardId} not found`,
+            'FLASHCARD_NOT_FOUND', 
+            HTTP_STATUS.NOT_FOUND
+        );
     }
+
+    const data = doc.data();
+
+    const flashcard: Flashcard = {
+        id: doc.id,
+        question: data?.question,
+        answer: data?.answer,
+        isMastered: data?.isMastered,
+        createdAt: data?.createdAt,
+        updatedAt: data?.updatedAt
+    } as Flashcard;
+
+    return flashcard;
 }
 
 export const getAllFlashcardsService = async (deckId: string): Promise<Flashcard[]> => 
 {
-    try 
-    {
-        const doc = db.collection('decks').doc(deckId).collection('flashcards');
-        
-        const snapshot = await doc.get();
+    // check if deck exists before retrieving flashcards
+    await getDeckService(deckId);
 
-        const flashcards = snapshot.docs.map((doc) => 
-        {
-            const data = doc.data();
-            return {
-                id: doc.id,
-                question: data.question,
-                answer: data.answer,
-                isMastered: data.isMastered,
-                createdAt: data.createdAt,
-                updatedAt: data.updatedAt
-            } as Flashcard;
-        });
-        return flashcards;
-    } 
-    catch (error: unknown)
+    const snapshot = await getDocuments(`decks/${deckId}/flashcards`);
+
+    const flashcards = snapshot.docs.map((doc) => 
     {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to retrieve all flashcards: ${errorMessage}`);
-    }
+        const data = doc.data();
+        return {
+            id: doc.id,
+            question: data.question,
+            answer: data.answer,
+            isMastered: data.isMastered,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+        } as Flashcard;
+    });
+
+    return flashcards;
 };
 
 export const updateFlashcardService = async (deckId: string, cardId: string, flashcardData:
     { isMastered: boolean }): Promise<Flashcard | undefined>  => 
 {
-    try 
-    {
-        const doc = db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId);
-        doc.update(flashcardData);
+    // check if deck exists before updating flashcard
+    await getDeckService(deckId);
 
-        // Return the updated flashcard
-        const updatedFlashcard = await getFlashcardService(deckId, cardId);
-        updatedFlashcard!.updatedAt = new Date().toISOString();
-        return updatedFlashcard;
-    } 
-    catch (error: unknown)
-    {
-        const errorMessage =error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to update flashcard ${cardId}: ${errorMessage}`);
-    }
+    // Check if flashcard exists before updating
+    await getFlashcardService(deckId, cardId);
+    await updateDocument(`decks/${deckId}/flashcards`, cardId, flashcardData);
+
+    // Return the updated flashcard
+    const updatedFlashcard = await getFlashcardService(deckId, cardId);
+    updatedFlashcard!.updatedAt = new Date().toISOString();
+    return updatedFlashcard;
 };
 
 export const deleteFlashcardService = async (deckId: string, cardId: string): Promise<void> =>
 {
-    try 
-    {
-        // Check if flashcard exists before deleting
-        const flashcard = await getFlashcardService(deckId, cardId);
-        if (!flashcard) 
-        {
-            throw new Error(`Flashcard with ID ${cardId} not found`);
-        }
+    // check if deck exists before deleting flashcard
+    await getDeckService(deckId);
 
-        const doc = db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId);
-        await doc.delete();
-    } 
-    catch (error: unknown)
-    {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to delete the flashcard: ${errorMessage}`);
-    }
+    // Check if flashcard exists before deleting
+    await getFlashcardService(deckId, cardId);
+    await deleteDocument(`decks/${deckId}/flashcards`, cardId);
+
+    // update the card count in the deck any time a flashcard is deleted
+    const cardCount = (await getAllFlashcardsService(deckId)).length;
+    await updateDocument(`decks`, deckId, 
+    { 
+        cardCount: cardCount
+    });
 }
