@@ -1,10 +1,10 @@
 // External module imports
 import express, { Express } from "express";
 import dotenv from "dotenv";
-
 dotenv.config();
 
 // Internal module imports
+import { helmetConfig } from "./config/helmetConfig";
 import {
     accessLogger,
     errorLogger,
@@ -18,6 +18,9 @@ import deckRouter from "./api/v1/routes/deckRoutes";
 
 // Initialize Express application
 const app: Express = express();
+
+// Apply basic Helmet security
+app.use(helmetConfig());
 
 // Logging middleware
 if (process.env.NODE_ENV === "production") {
