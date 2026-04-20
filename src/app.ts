@@ -1,5 +1,8 @@
 // External module imports
 import express, { Express } from "express";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Internal module imports
 import {
@@ -16,7 +19,7 @@ import deckRouter from "./api/v1/routes/deckRoutes";
 // Initialize Express application
 const app: Express = express();
 
-// Logging middleware (should be applied early in the middleware stack)
+// Logging middleware
 if (process.env.NODE_ENV === "production") {
     // In production, log to files
     app.use(accessLogger);
@@ -51,7 +54,7 @@ app.use("/api/v1/decks", deckRouter);
 // Setup Swagger
 setupSwagger(app);
 
-// Global error handling middleware (MUST be applied last)
+// Global error handling middleware
 app.use(errorHandler);
 
 export default app;
