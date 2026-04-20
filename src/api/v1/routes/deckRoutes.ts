@@ -1,7 +1,9 @@
 // External module imports
 import express, { Router } from "express";
+import cors from "cors";
 
 // Internal module imports
+import { publicCorsOptions, authenticatedCorsOptions } from "../../../config/corsConfig";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { validateRequest } from "../middleware/validate";
@@ -56,10 +58,11 @@ const deckRouter: Router = express.Router();
  *             $ref: '#/components/schemas/Error'
  */
 deckRouter.post("/", 
+    cors(authenticatedCorsOptions),
     authenticate,
-  isAuthorized({ hasRole: ["user"] }),
-  validateRequest(deckSchemas.create),
-  createDeck);
+    isAuthorized({ hasRole: ["user"] }),
+    validateRequest(deckSchemas.create),
+    createDeck);
  
 /**
  * @openapi
@@ -85,7 +88,7 @@ deckRouter.post("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-deckRouter.get("/:deckId", validateRequest(deckSchemas.getById), getDeck);
+deckRouter.get("/:deckId", cors(publicCorsOptions),validateRequest(deckSchemas.getById), getDeck);
 
 /**
  * @openapi
@@ -137,7 +140,7 @@ deckRouter.get("/:deckId", validateRequest(deckSchemas.getById), getDeck);
  *               totalPages:
  *                 type: integer
  */
-deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
+deckRouter.get("/", cors(publicCorsOptions), validateRequest(deckSchemas.list), getAllDecks);
 
 /**
  * @openapi
@@ -190,7 +193,8 @@ deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-deckRouter.put("/:deckId", 
+deckRouter.put("/:deckId",
+    cors(authenticatedCorsOptions), 
     authenticate,
     isAuthorized({ 
         hasRole: ["user"], 
@@ -238,6 +242,7 @@ deckRouter.put("/:deckId",
  *             $ref: '#/components/schemas/Error'
  */
 deckRouter.delete("/:deckId", 
+    cors(authenticatedCorsOptions),
     authenticate,
     isAuthorized({ 
         hasRole: ["user"], 
