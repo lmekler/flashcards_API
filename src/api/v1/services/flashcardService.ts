@@ -18,11 +18,11 @@ export const createFlashcardService = async (
         isMastered?: boolean;
     }): Promise<Flashcard> => 
 {
-    // check if deck exists before creating flashcard
+    // Check if the deck exists before creating a flashcard
     await getDeckService(deckId);
 
-    // create a new flashcard with the provided data and 
-    // an initial isMastered value of false if not provided
+    // Create a new flashcard with input data and
+    // unmastered status by default
     const newFlashcard: Flashcard =
     {
         question: flashcardData.question,
@@ -33,7 +33,7 @@ export const createFlashcardService = async (
 
     const id = await createDocument(`decks/${deckId}/flashcards`, newFlashcard);
 
-    // update the card count in the deck any time a flashcard is created
+    // Update the card count in the deck any time a flashcard is created
     const cardCount = (await getAllFlashcardsService(deckId)).length;
     await updateDocument(`decks`, deckId, 
     { 
@@ -94,14 +94,14 @@ export const getAllFlashcardsService = async (deckId: string): Promise<Flashcard
 export const updateFlashcardService = async (deckId: string, cardId: string, flashcardData:
     { isMastered: boolean }): Promise<Flashcard | undefined>  => 
 {
-    // check if deck exists before updating flashcard
+    // Check if the deck exists before updating
     await getDeckService(deckId);
 
-    // Check if flashcard exists before updating
+    // Check if the flashcard exists before updating
     await getFlashcardService(deckId, cardId);
+
     await updateDocument(`decks/${deckId}/flashcards`, cardId, flashcardData);
 
-    // Return the updated flashcard
     const updatedFlashcard = await getFlashcardService(deckId, cardId);
     updatedFlashcard!.updatedAt = new Date().toISOString();
     return updatedFlashcard;
@@ -109,14 +109,15 @@ export const updateFlashcardService = async (deckId: string, cardId: string, fla
 
 export const deleteFlashcardService = async (deckId: string, cardId: string): Promise<void> =>
 {
-    // check if deck exists before deleting flashcard
+    // Check if the deck exists before deleting
     await getDeckService(deckId);
 
-    // Check if flashcard exists before deleting
+    // Check if the flashcard exists before deleting
     await getFlashcardService(deckId, cardId);
+
     await deleteDocument(`decks/${deckId}/flashcards`, cardId);
 
-    // update the card count in the deck any time a flashcard is deleted
+    // Update the card count in the deck any time a flashcard is deleted
     const cardCount = (await getAllFlashcardsService(deckId)).length;
     await updateDocument(`decks`, deckId, 
     { 

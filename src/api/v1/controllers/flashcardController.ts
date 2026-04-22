@@ -25,7 +25,7 @@ export const createFlashcard = async (req: Request,
 {
     try 
     {
-        // Create a new flashcard using deck ID and input data
+        // Create a new flashcard with input data using the deck ID
         const 
         { 
             question,
@@ -69,11 +69,11 @@ export const getFlashcard = async (req: Request,
 {
     try 
     {
-        // retrieve deck using the deck ID
+        // Retrieve a deck using the deck ID
         const deckId = req.params.deckId.toString();
         const deck = await getDeckService(deckId);
 
-        // reject access to the deck if it is private and does not belong to the user
+        // Reject access to the deck if it is private and does not belong to the user
         if (!deck?.visibility && deck?.userId !== res.locals.uid) 
         {
             throw new AppError(
@@ -112,11 +112,11 @@ export const getAllFlashcards = async (req: Request,
 {
     try
     {
-        // retrieve deck using the deck ID
+        // Retrieve a deck using the deck ID
         const deckId = req.params.deckId.toString();
         const deck = await getDeckService(deckId);
 
-        // reject access to the deck if it is private and does not belong to the user
+        // Reject access to the deck if it is private and does not belong to the user
         if (!deck?.visibility && deck?.userId !== res.locals.uid) 
         {
             throw new AppError(
@@ -153,7 +153,7 @@ export const updateFlashcard = async (req: Request,
 {
     try 
     {
-        // Update a flashcard using the deck ID and flashcard ID with input data
+        // Update a flashcard with input data using the deck ID and flashcard ID
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
         const {
