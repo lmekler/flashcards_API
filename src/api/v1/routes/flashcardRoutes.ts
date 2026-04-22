@@ -80,7 +80,7 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  */
 flashcardRouter.post("/", 
     cors(authenticatedCorsOptions),
-    authenticate,
+    authenticate(true),
     isAuthorized({ 
         hasRole: ["user"], 
         allowSameUser: true
@@ -127,7 +127,11 @@ flashcardRouter.post("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.get("/:cardId", cors(publicCorsOptions),validateRequest(flashcardSchemas.getById), getFlashcard);
+flashcardRouter.get("/:cardId", 
+    cors(publicCorsOptions), 
+    authenticate(false), 
+    validateRequest(flashcardSchemas.getById), 
+    getFlashcard);
 
 /**
  * @openapi
@@ -187,7 +191,11 @@ flashcardRouter.get("/:cardId", cors(publicCorsOptions),validateRequest(flashcar
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.get("/", cors(publicCorsOptions),validateRequest(flashcardSchemas.list), getAllFlashcards);
+flashcardRouter.get("/", 
+    cors(publicCorsOptions), 
+    authenticate(false),
+    validateRequest(flashcardSchemas.list), 
+    getAllFlashcards);
 
 /**
  * @openapi
@@ -246,7 +254,7 @@ flashcardRouter.get("/", cors(publicCorsOptions),validateRequest(flashcardSchema
  */
 flashcardRouter.put("/:cardId", 
     cors(authenticatedCorsOptions),
-    authenticate,
+    authenticate(true),
     isAuthorized({ 
         hasRole: ["user"], 
         allowSameUser: true
@@ -298,7 +306,7 @@ flashcardRouter.put("/:cardId",
  */
 flashcardRouter.delete("/:cardId", 
     cors(authenticatedCorsOptions),
-    authenticate,
+    authenticate(true),
     isAuthorized({ 
         hasRole: ["user"], 
         allowSameUser: true 

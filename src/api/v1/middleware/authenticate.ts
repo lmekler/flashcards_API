@@ -22,7 +22,7 @@ import { auth } from "../../../config/firebaseConfig";
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-const authenticate = async (
+const authenticate = (required: boolean) => async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -34,6 +34,9 @@ const authenticate = async (
             : undefined;
 
         if (!token) {
+            if (!required) {
+                return next();
+            }
             throw new AuthenticationError(
                 "Unauthorized: No token provided",
                 "TOKEN_NOT_FOUND"

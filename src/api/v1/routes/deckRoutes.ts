@@ -59,7 +59,7 @@ const deckRouter: Router = express.Router();
  */
 deckRouter.post("/", 
     cors(authenticatedCorsOptions),
-    authenticate,
+    authenticate(true),
     isAuthorized({ hasRole: ["user"] }),
     validateRequest(deckSchemas.create),
     createDeck);
@@ -88,7 +88,11 @@ deckRouter.post("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-deckRouter.get("/:deckId", cors(publicCorsOptions),validateRequest(deckSchemas.getById), getDeck);
+deckRouter.get("/:deckId", 
+    cors(publicCorsOptions), 
+    authenticate(false), 
+    validateRequest(deckSchemas.getById), 
+    getDeck);
 
 /**
  * @openapi
@@ -140,7 +144,11 @@ deckRouter.get("/:deckId", cors(publicCorsOptions),validateRequest(deckSchemas.g
  *               totalPages:
  *                 type: integer
  */
-deckRouter.get("/", cors(publicCorsOptions), validateRequest(deckSchemas.list), getAllDecks);
+deckRouter.get("/", 
+    cors(publicCorsOptions), 
+    authenticate(false), 
+    validateRequest(deckSchemas.list), 
+    getAllDecks);
 
 /**
  * @openapi
@@ -195,7 +203,7 @@ deckRouter.get("/", cors(publicCorsOptions), validateRequest(deckSchemas.list), 
  */
 deckRouter.put("/:deckId",
     cors(authenticatedCorsOptions), 
-    authenticate,
+    authenticate(true),
     isAuthorized({ 
         hasRole: ["user"], 
         allowSameUser: true
@@ -243,7 +251,7 @@ deckRouter.put("/:deckId",
  */
 deckRouter.delete("/:deckId", 
     cors(authenticatedCorsOptions),
-    authenticate,
+    authenticate(true),
     isAuthorized({ 
         hasRole: ["user"], 
         allowSameUser: true 
