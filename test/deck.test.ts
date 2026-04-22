@@ -36,6 +36,8 @@ describe('Deck Service', () =>
             "decks",
             expect.objectContaining(
             {
+                userId: mockUserId,
+                visibility: true,
                 title: mockDeckData.title,
                 description: mockDeckData.description,
                 cardCount: 0,
@@ -198,6 +200,7 @@ describe('Deck Service', () =>
         {
             title: "My Deck",
             userId: "testUserId_1",
+            visibility: true,
             description: "A description of my deck",
             cardCount: 0,
             createdAt: expect.any(String)
