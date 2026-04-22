@@ -6,7 +6,7 @@ import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
 
-// name of the Firestore collection for decks
+// Name of the Firestore collection for decks
 const COLLECTION = "decks";
 
 export const createDeckService = async (
@@ -17,8 +17,8 @@ export const createDeckService = async (
         description?: string;
     }): Promise<Deck> => 
 {
-    // create a new deck with the provided data and an initial card count
-    // of 0, and public access if the visibility field is not provided
+    // Create a new deck with input data, an initial card
+    // count of 0, and public access by default
     const newDeck: Deck =
     {
         userId: userId,
@@ -92,7 +92,7 @@ export const getAllDecksService = async (userId?: string): Promise<Deck[]> =>
 export const updateDeckService = async (deckId: string, deckData: Partial<Pick<
     Deck, "visibility" | "description">> ): Promise<Deck | undefined> =>
 {
-    // Check if deck exists before updating
+    // Check if the deck exists before updating
     await getDeckService(deckId);
 
     const updateData = {
@@ -102,14 +102,13 @@ export const updateDeckService = async (deckId: string, deckData: Partial<Pick<
 
     await updateDocument<Deck>(COLLECTION, deckId, updateData);
 
-    // Return the updated deck
     const updatedDeck = await getDeckService(deckId);
     return updatedDeck;
 };
 
 export const deleteDeckService = async (deckId: string): Promise<void> =>
 {
-    // Check if deck exists before deleting
+    // Check if the deck exists before deleting
     await getDeckService(deckId);
     await deleteDocument(COLLECTION, deckId);
 }

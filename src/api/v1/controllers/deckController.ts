@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 // Internal module imports
 import { AppError } from '../errors/errors';
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
-import { Deck, DeckData } from "../models/deckModel";
+import { Deck } from "../models/deckModel";
 import { successResponse } from "../models/responseModel";
 import { createDeckService, getDeckService,
     getAllDecksService, updateDeckService,
@@ -24,11 +24,10 @@ export const createDeck = async (req: Request,
 {
     try 
     {
-        // Create a deck using the user ID from response 
-        // locals and deck data from the request body
         const userId = res.locals.uid as string;
         const deckData = req.body;
 
+        // Create a deck with input data
         const deck: Deck = await createDeckService(userId, deckData);
 
         res.status(HTTP_STATUS.CREATED).json
@@ -56,12 +55,12 @@ export const getDeck = async (req: Request,
 {
     try 
     {
-        // Retrieve a deck using the ID from the request parameters
+        // Retrieve a deck using the deck ID
         const deckId: string = req.params.deckId.toString();
 
         const deck = await getDeckService(deckId);
 
-        // reject access to the deck if it is private and does not belong to the user
+        // Reject access to the deck if it is private and does not belong to the user
         if (!deck?.visibility && deck?.userId !== res.locals.uid) 
         {
             throw new AppError(
@@ -98,7 +97,7 @@ export const getAllDecks = async (req: Request,
     {
         const userId = res.locals.uid as string;
 
-        // Retrieve a list of all decks
+        // Retrieve a list of every deck the user has access to
         const decks: Deck[] = await getAllDecksService(userId);
 
         res.status(HTTP_STATUS.OK).json
@@ -126,8 +125,7 @@ export const updateDeck = async (req: Request,
 {
     try 
     {
-        // Update a deck using the ID from the request 
-        // parameters and data from the request body
+        // Update a deck with input data using the deck ID
         const deckId: string = req.params.deckId.toString();
         const updateData= req.body;
 
@@ -158,7 +156,7 @@ export const deleteDeck = async (req: Request,
 {
     try 
     {
-        // Delete a deck using the ID from the request parameters
+        // Delete a deck using the deck ID
         const deckId: string = req.params.deckId.toString();
 
         await deleteDeckService(deckId);
