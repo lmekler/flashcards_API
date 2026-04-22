@@ -6,20 +6,23 @@ import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
 
-// Name of the Firestore collection for decks
+// name of the Firestore collection for decks
 const COLLECTION = "decks";
 
 export const createDeckService = async (
     userId: string,
     deckData: {
+        visibility?: boolean;
         title: string;
         description?: string;
     }): Promise<Deck> => 
 {
-    // create a new deck with the provided data and an initial card count of 0
+    // create a new deck with the provided data and an initial card count
+    // of 0, and public access if the visibility field is not provided
     const newDeck: Deck =
     {
         userId: userId,
+        visibility: deckData.visibility ?? true,
         title: deckData.title,
         description: deckData.description ?? '',
         cardCount: 0,
@@ -49,6 +52,7 @@ export const getDeckService = async (deckId: string): Promise<Deck | undefined> 
     const deck: Deck = {
         id: doc.id,
         userId: data?.userId,
+        visibility: data?.visibility,
         title: data?.title,
         description: data?.description,
         cardCount: data?.cardCount,
@@ -59,16 +63,21 @@ export const getDeckService = async (deckId: string): Promise<Deck | undefined> 
     return deck;
 }
 
-export const getAllDecksService = async (): Promise<Deck[]> => 
+export const getAllDecksService = async (userId?: string): Promise<Deck[]> => 
 {
     const snapshot = await getDocuments(COLLECTION);
 
-    const decks = snapshot.docs.map((doc) => 
+    const decks = snapshot.docs.filter((doc) => 
+    {
+        const data = doc.data();
+        return data.visibility || data.userId === userId;
+    }).map((doc) => 
     {
         const data = doc.data();
         return {
             id: doc.id,
             userId: data.userId,
+            visibility: data.visibility,
             cardCount: data.cardCount,
             title: data.title,
             description: data.description,
@@ -80,16 +89,21 @@ export const getAllDecksService = async (): Promise<Deck[]> =>
     return decks;
 };
 
-export const updateDeckService = async (deckId: string, deckData: 
-    { description: string }): Promise<Deck | undefined>  => 
+export const updateDeckService = async (deckId: string, deckData: Partial<Pick<
+    Deck, "visibility" | "description">> ): Promise<Deck | undefined> =>
 {
     // Check if deck exists before updating
     await getDeckService(deckId);
-    await updateDocument<Deck>(COLLECTION, deckId, deckData);
+
+    const updateData = {
+        ...deckData,
+        updatedAt: new Date().toISOString(),
+    };
+
+    await updateDocument<Deck>(COLLECTION, deckId, updateData);
 
     // Return the updated deck
     const updatedDeck = await getDeckService(deckId);
-    updatedDeck!.updatedAt = new Date().toISOString();
     return updatedDeck;
 };
 

@@ -1,7 +1,13 @@
 // External module imports
 import express, { Express } from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+
+dotenv.config();
 
 // Internal module imports
+import { helmetConfig } from "./config/helmetConfig";
+import { publicCorsOptions, authenticatedCorsOptions } from "./config/corsConfig";
 import {
     accessLogger,
     errorLogger,
@@ -16,7 +22,10 @@ import deckRouter from "./api/v1/routes/deckRoutes";
 // Initialize Express application
 const app: Express = express();
 
-// Logging middleware (should be applied early in the middleware stack)
+// Apply Helmet security
+app.use(helmetConfig());
+
+// Logging middleware
 if (process.env.NODE_ENV === "production") {
     // In production, log to files
     app.use(accessLogger);
@@ -26,8 +35,10 @@ if (process.env.NODE_ENV === "production") {
     app.use(consoleLogger);
 }
 
-// Health check endpoint
-app.get("/api/v1/health", (req, res) => {
+// Health check endpoint with public CORS configuration
+app.get("/api/v1/health",
+    cors(publicCorsOptions),
+    (req, res) => {
     res.json({
         status: "OK",
         uptime: process.uptime(),
@@ -39,11 +50,11 @@ app.get("/api/v1/health", (req, res) => {
 // Body parsing middleware
 app.use(express.json());
 
-// Route handler for admins
-app.use("/api/v1/admin", adminRoutes);
+// Route handler for admins with authenticated CORS configuration
+app.use("/api/v1/admin", cors(authenticatedCorsOptions), adminRoutes);
 
-// Route handler for users
-app.use("/api/v1/users", userRoutes);
+// Route handler for users with authenticated CORS configuration
+app.use("/api/v1/users", cors(authenticatedCorsOptions), userRoutes);
 
 // Route handler for decks
 app.use("/api/v1/decks", deckRouter);
@@ -51,7 +62,7 @@ app.use("/api/v1/decks", deckRouter);
 // Setup Swagger
 setupSwagger(app);
 
-// Global error handling middleware (MUST be applied last)
+// Global error handling middleware
 app.use(errorHandler);
 
 export default app;

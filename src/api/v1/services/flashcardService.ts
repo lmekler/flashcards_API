@@ -46,9 +46,6 @@ export const createFlashcardService = async (
 export const getFlashcardService = async (deckId: string, 
     cardId: string): Promise<Flashcard | undefined> =>
 {
-    // check if deck exists before retrieving flashcard
-    await getDeckService(deckId);
-
     const doc = await getDocumentById(`decks/${deckId}/flashcards`, cardId);
 
     if (!doc) 
@@ -76,9 +73,6 @@ export const getFlashcardService = async (deckId: string,
 
 export const getAllFlashcardsService = async (deckId: string): Promise<Flashcard[]> => 
 {
-    // check if deck exists before retrieving flashcards
-    await getDeckService(deckId);
-
     const snapshot = await getDocuments(`decks/${deckId}/flashcards`);
 
     const flashcards = snapshot.docs.map((doc) => 

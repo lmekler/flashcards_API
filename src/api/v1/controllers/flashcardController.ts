@@ -2,9 +2,11 @@
 import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
+import { AppError } from "../errors/errors";
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
 import { Flashcard } from "../models/flashcardModel";
 import { successResponse } from "../models/responseModel";
+import { getDeckService } from "../services/deckService";
 import { createFlashcardService, getFlashcardService,
     getAllFlashcardsService, updateFlashcardService,
     deleteFlashcardService } from "../services/flashcardService";
@@ -23,8 +25,7 @@ export const createFlashcard = async (req: Request,
 {
     try 
     {
-        // Create a new flashcard using the data from the request 
-        // body and deck ID from the request parameters
+        // Create a new flashcard using deck ID and input data
         const 
         { 
             question,
@@ -68,9 +69,21 @@ export const getFlashcard = async (req: Request,
 {
     try 
     {
-        // Retrieve a flashcard using the deck ID and 
-        // flashcard ID from the request parameters
+        // retrieve deck using the deck ID
         const deckId = req.params.deckId.toString();
+        const deck = await getDeckService(deckId);
+
+        // reject access to the deck if it is private and does not belong to the user
+        if (!deck?.visibility && deck?.userId !== res.locals.uid) 
+        {
+            throw new AppError(
+                'You do not have permission to access this deck', 
+                'FORBIDDEN',
+                HTTP_STATUS.FORBIDDEN
+            );
+        }
+
+        // Retrieve a flashcard using the flashcard ID
         const cardId: string = req.params.cardId.toString();
         const flashcard = await getFlashcardService(deckId, cardId);
         
@@ -99,9 +112,21 @@ export const getAllFlashcards = async (req: Request,
 {
     try
     {
-        // Retrieve a list of all flashcards for a specific deck 
-        // using the deck ID from the request parameters
+        // retrieve deck using the deck ID
         const deckId = req.params.deckId.toString();
+        const deck = await getDeckService(deckId);
+
+        // reject access to the deck if it is private and does not belong to the user
+        if (!deck?.visibility && deck?.userId !== res.locals.uid) 
+        {
+            throw new AppError(
+                'You do not have permission to access this deck', 
+                'FORBIDDEN',
+                HTTP_STATUS.FORBIDDEN
+            );
+        }
+                
+        // Retrieve a list of all the flashcards within the deck
         const flashcards: Flashcard[] = await getAllFlashcardsService(deckId);
         res.status(HTTP_STATUS.OK).json
         (
@@ -128,8 +153,7 @@ export const updateFlashcard = async (req: Request,
 {
     try 
     {
-        // Update a flashcard using the deck ID and flashcard ID from 
-        // the request parameters and data from the request body
+        // Update a flashcard using the deck ID and flashcard ID with input data
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
         const {
@@ -164,8 +188,7 @@ export const deleteFlashcard = async (req: Request,
 {
     try 
     {
-        // Delete a flashcard using the deck ID and 
-        // flashcard ID from the request parameters
+        // Delete a flashcard using the deck ID and flashcard ID
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
         await deleteFlashcardService(deckId, cardId);
