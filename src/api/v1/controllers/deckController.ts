@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
+import { AppError } from '../errors/errors';
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
 import { Deck, DeckData } from "../models/deckModel";
 import { successResponse } from "../models/responseModel";
@@ -23,26 +24,16 @@ export const createDeck = async (req: Request,
 {
     try 
     {
-        // Create a new deck using the data from the request body
-        const 
-        { 
-            title, 
-            description
-        } = req.body;
-
+        // Create a deck using the user ID from response 
+        // locals and deck data from the request body
         const userId = res.locals.uid as string;
+        const deckData = req.body;
 
-        const deckData: DeckData = 
-        { 
-            title, 
-            description,
-        };
-
-        const deckResponse: Deck = await createDeckService(userId, deckData);
+        const deck: Deck = await createDeckService(userId, deckData);
 
         res.status(HTTP_STATUS.CREATED).json
         (
-            successResponse(deckResponse, "Deck created successfully")
+            successResponse(deck, "Deck created successfully")
         );
     }
     catch (error: unknown) 
@@ -67,8 +58,19 @@ export const getDeck = async (req: Request,
     {
         // Retrieve a deck using the ID from the request parameters
         const deckId: string = req.params.deckId.toString();
+
         const deck = await getDeckService(deckId);
-        
+
+        // reject access to the deck if it is private and does not belong to the user
+        if (!deck?.visibility && deck?.userId !== res.locals.uid) 
+        {
+            throw new AppError(
+                'You do not have permission to access this deck', 
+                'FORBIDDEN',
+                HTTP_STATUS.FORBIDDEN
+            );
+        }
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(deck, "Deck retrieved successfully")
@@ -94,8 +96,11 @@ export const getAllDecks = async (req: Request,
 {
     try
     {
+        const userId = res.locals.uid as string;
+
         // Retrieve a list of all decks
-        const decks: Deck[] = await getAllDecksService();
+        const decks: Deck[] = await getAllDecksService(userId);
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(decks, "Decks retrieved successfully", decks.length)
@@ -124,13 +129,10 @@ export const updateDeck = async (req: Request,
         // Update a deck using the ID from the request 
         // parameters and data from the request body
         const deckId: string = req.params.deckId.toString();
-        const {
-            description
-        }: {
-            description: string;
-        } = req.body;
-        
-        const updatedDeck = await updateDeckService(deckId, { description });
+        const updateData= req.body;
+
+        const updatedDeck = await updateDeckService(deckId, updateData);
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(updatedDeck, "Deck updated successfully")
@@ -158,7 +160,9 @@ export const deleteDeck = async (req: Request,
     {
         // Delete a deck using the ID from the request parameters
         const deckId: string = req.params.deckId.toString();
+
         await deleteDeckService(deckId);
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(null, "Deck deleted successfully")

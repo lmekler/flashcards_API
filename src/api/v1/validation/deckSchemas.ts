@@ -9,6 +9,7 @@ import Joi, { ObjectSchema } from "joi";
  *       type: object
  *       required:
  *         - userId
+ *         - visibility
  *         - title
  *         - cardCount
  *       properties:
@@ -20,6 +21,10 @@ import Joi, { ObjectSchema } from "joi";
  *           type: string
  *           description: The user who owns the deck
  *           example: "user_1"
+ *         visibility:
+ *           type: boolean
+ *           description: Whether the deck is private or public
+ *           example: true
  *         title:
  *           type: string
  *           minLength: 1
@@ -50,6 +55,9 @@ import Joi, { ObjectSchema } from "joi";
 export const deckSchemas = {
     create: {
         body: Joi.object({
+            visibility: Joi.boolean().optional().messages({
+                "boolean.base": "Visibility must be a boolean value"
+            }),
             title: Joi.string().min(1).max(100).required().messages({
                 "any.required": "Title is required",
                 "string.empty": "Title cannot be empty",
@@ -79,6 +87,9 @@ export const deckSchemas = {
             })
         }),
         body: Joi.object({
+            visibility: Joi.boolean().optional().messages({
+                "boolean.base": "Visibility must be a boolean value"
+            }),
             description: Joi.string().max(500).allow("").optional().messages({
                 "string.max": "Description cannot exceed 500 characters"
             })
