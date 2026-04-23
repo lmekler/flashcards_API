@@ -23,21 +23,10 @@ export const createFlashcard = async (req: Request,
 {
     try 
     {
-        const 
-        { 
-            question,
-            answer,
-            isMastered
-        } = req.body;
         const deckId = req.params.deckId.toString();
-        const flashcardData: Flashcard = 
-        { 
-            question,
-            answer,
-            isMastered
-        };
+        const flashcardData = req.body;
         const { role, uid } = res.locals;
-
+        
         const flashcardResponse: Flashcard = await createFlashcardService(
             deckId, 
             flashcardData, 
@@ -132,17 +121,13 @@ export const updateFlashcard = async (req: Request,
     {
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
-        const {
-            isMastered
-        }: {
-            isMastered: boolean;
-        } = req.body;
+        const updateData = req.body;
         const { role, uid } = res.locals;
 
         const updatedFlashcard = await updateFlashcardService(
             deckId, 
             cardId, 
-            { isMastered }, 
+            updateData, 
             { role, uid }
         );
 
