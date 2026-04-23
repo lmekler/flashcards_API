@@ -1,5 +1,5 @@
 import { Deck } from "../models/deckModel";
-import { ROLES } from "../../../constants/roles";
+import { ROLE } from "../../../constants/roles";
 
 export const canView = (
     deck: Deck, 
@@ -10,7 +10,7 @@ export const canView = (
 {
     if (deck.visibility) return true;
     if (!user) return false;
-    if (user.role === ROLES.ADMIN) return true;
+    if (user.role === ROLE.ADMIN) return true;
     return deck.userId === user.uid;
 };
 
@@ -33,6 +33,6 @@ export const canDelete = (
     }): boolean => 
 {
     if (!user) return false;
-    if (user.role === ROLES.ADMIN) return true;
+    if (user.role === ROLE.ADMIN) return true;
     return deck.userId === user.uid;
 };

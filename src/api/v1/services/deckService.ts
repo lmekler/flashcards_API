@@ -1,14 +1,12 @@
 // Internal module imports
 import { HTTP_STATUS } from '../../../constants/httpConstants';
+import { COLLECTION } from '../../../constants/firestoreCollections';
 import { AppError } from '../errors/errors';
 import { Deck } from '../models/deckModel';
 import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
-
-// Name of the Firestore collection for decks
-const COLLECTION = "decks";
 
 export const createDeckService = async (
     userId: string,
@@ -30,7 +28,7 @@ export const createDeckService = async (
         createdAt: new Date().toISOString()
     };
 
-    const id = await createDocument<Deck>(COLLECTION, newDeck);
+    const id = await createDocument<Deck>(COLLECTION.DECK, newDeck);
 
     return { id, ...newDeck } as Deck;
 };
@@ -38,7 +36,7 @@ export const createDeckService = async (
 // Finds a deck by ID and returns it with no access control
 export const findDeckById = async (deckId: string): Promise<Deck> => 
 {
-    const doc = await getDocumentById(COLLECTION, deckId);
+    const doc = await getDocumentById(COLLECTION.DECK, deckId);
 
     if (!doc) 
     {
@@ -94,7 +92,7 @@ export const getAllDecksService = async (
         uid: string
     }): Promise<Deck[]> => 
 {
-    const snapshot = await getDocuments(COLLECTION);
+    const snapshot = await getDocuments(COLLECTION.DECK);
 
     const decks: Deck[] = snapshot.docs.map((doc) => 
     {
@@ -144,7 +142,7 @@ export const updateDeckService = async (
         updatedAt: new Date().toISOString(),
     };
 
-    await updateDocument<Deck>(COLLECTION, deckId, updateData);
+    await updateDocument<Deck>(COLLECTION.DECK, deckId, updateData);
 
     const updatedDeck: Deck = await getDeckService(deckId, user);
     return updatedDeck;
@@ -170,5 +168,5 @@ export const deleteDeckService = async (
             HTTP_STATUS.FORBIDDEN
         );
     }
-    await deleteDocument(COLLECTION, deckId);
+    await deleteDocument(COLLECTION.DECK, deckId);
 }

@@ -8,7 +8,7 @@ import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { validateRequest } from "../middleware/validate";
 import { flashcardSchemas } from "../validation/flashcardSchemas";
-import { ROLES } from "../../../constants/roles";
+import { ROLE } from "../../../constants/roles";
 import { createFlashcard, getFlashcard, getAllFlashcards,
     updateFlashcard, deleteFlashcard } from "../controllers/flashcardController"
 
@@ -83,7 +83,7 @@ flashcardRouter.post("/",
     cors(authenticatedCorsOptions),
     authenticate(true),
     isAuthorized(true, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.create),
     createFlashcard);
@@ -131,7 +131,7 @@ flashcardRouter.get("/:cardId",
     cors(publicCorsOptions),
     authenticate(false),
     isAuthorized(false, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.getById),
     getFlashcard);
@@ -198,7 +198,7 @@ flashcardRouter.get("/",
     cors(publicCorsOptions),
     authenticate(false),
     isAuthorized(false, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.list),
     getAllFlashcards);
@@ -262,7 +262,7 @@ flashcardRouter.put("/:cardId",
     cors(authenticatedCorsOptions),
     authenticate(true),
     isAuthorized(true, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.update),
     updateFlashcard);
@@ -313,7 +313,7 @@ flashcardRouter.delete("/:cardId",
     cors(authenticatedCorsOptions),
     authenticate(true),
     isAuthorized(true, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.delete),
     deleteFlashcard);
