@@ -147,7 +147,7 @@ export const getAllFlashcardsService = async (
 export const updateFlashcardService = async (
     deckId: string, 
     cardId: string, 
-    flashcardData: { 
+    updateData: { 
         isMastered: boolean 
     },
     user?: {
@@ -171,7 +171,7 @@ export const updateFlashcardService = async (
         );
     }
 
-    await updateDocument(`decks/${deckId}/flashcards`, cardId, flashcardData);
+    await updateDocument(`decks/${deckId}/flashcards`, cardId, updateData);
 
     const updatedFlashcard = await getFlashcardService(deckId, cardId, user);
     updatedFlashcard!.updatedAt = new Date().toISOString();
