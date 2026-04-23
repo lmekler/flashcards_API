@@ -1,7 +1,4 @@
-/**
- * Roles that can be assigned to users through custom claims
- */
-export const ROLE = {
+export const ROLES = {
     ADMIN: "admin",
     USER: "user"
 }

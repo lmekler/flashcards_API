@@ -1,14 +1,15 @@
 // Internal module imports
 import { HTTP_STATUS } from '../../../constants/httpConstants';
-import { COLLECTION } from '../../../constants/firestoreCollections';
 import { AppError } from '../errors/errors';
 import { Flashcard } from '../models/flashcardModel';
-import { Deck } from '../models/deckModel';
 import { findDeckById } from "./deckService";
 import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
+
+// Name of the Firestore collection for flashcards
+const COLLECTION = "flashcards";
 
 export const createFlashcardService = async (
     deckId: string,
@@ -35,7 +36,8 @@ export const createFlashcardService = async (
         );
     }
 
-    // Create a new flashcard with input data and unmastered status by default
+    // Create a new flashcard with input data and
+    // unmastered status by default
     const newFlashcard: Flashcard =
     {
         question: flashcardData.question,
@@ -44,11 +46,10 @@ export const createFlashcardService = async (
         createdAt: new Date().toISOString()
     };
 
-    const id = await createDocument<Flashcard>(COLLECTION.FLASHCARD, newFlashcard);
+    const id = await createDocument(`decks/${deckId}/flashcards`, newFlashcard);
 
     // Update the card count in the deck any time a flashcard is created
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;
-
     await updateDocument(`decks`, deckId, 
     { 
         cardCount: cardCount
@@ -79,7 +80,7 @@ export const getFlashcardService = async (
         );
     }
     
-    const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
+    const doc = await getDocumentById(`decks/${deckId}/flashcards`, cardId);
 
     if (!doc) 
     {
@@ -125,7 +126,7 @@ export const getAllFlashcardsService = async (
         );
     }
 
-    const snapshot = await getDocuments(COLLECTION.FLASHCARD);
+    const snapshot = await getDocuments(`decks/${deckId}/flashcards`);
 
     const flashcards = snapshot.docs.map((doc) => 
     {
@@ -170,15 +171,10 @@ export const updateFlashcardService = async (
         );
     }
 
-    const updateData = {
-        ...flashcardData,
-        updatedAt: new Date().toISOString(),
-    };
-    
-    await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
+    await updateDocument(`decks/${deckId}/flashcards`, cardId, flashcardData);
 
     const updatedFlashcard = await getFlashcardService(deckId, cardId, user);
-
+    updatedFlashcard!.updatedAt = new Date().toISOString();
     return updatedFlashcard;
 };
 
@@ -207,16 +203,12 @@ export const deleteFlashcardService = async (
         );
     }
 
-    await deleteDocument(COLLECTION.FLASHCARD, cardId);
+    await deleteDocument(`decks/${deckId}/flashcards`, cardId);
 
     // Update the card count in the deck any time a flashcard is deleted
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;
-
-    const updateData = {
-        ...deck,
-        cardCount: cardCount,
-        updatedAt: new Date().toISOString(),
-    };
-    
-    await updateDocument<Deck>(COLLECTION.DECK, deckId, updateData);
+    await updateDocument(`decks`, deckId, 
+    { 
+        cardCount: cardCount
+    });
 }
