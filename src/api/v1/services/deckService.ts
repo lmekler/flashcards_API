@@ -2,6 +2,7 @@
 import { HTTP_STATUS } from '../../../constants/httpConstants';
 import { AppError } from '../errors/errors';
 import { Deck } from '../models/deckModel';
+import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
@@ -34,7 +35,8 @@ export const createDeckService = async (
     return { id, ...newDeck } as Deck;
 };
 
-export const getDeckService = async (deckId: string): Promise<Deck | undefined> =>
+// Finds a deck by ID and returns it with no access control
+export const findDeckById = async (deckId: string): Promise<Deck> => 
 {
     const doc = await getDocumentById(COLLECTION, deckId);
 
@@ -59,19 +61,42 @@ export const getDeckService = async (deckId: string): Promise<Deck | undefined> 
         createdAt: data?.createdAt,
         updatedAt: data?.updatedAt
     } as Deck;
+    
+    return deck
+};
+
+export const getDeckService = async (
+    deckId: string,
+    user?: {
+        role: string;
+        uid: string;
+    }): Promise<Deck> =>
+{
+    const deck: Deck= await findDeckById(deckId);
+
+    // Reject access to the deck if it is private, does not belong to the user,
+    // and the user does not have a privileged role
+    if (!canView(deck, user)) 
+    {
+        throw new AppError(
+            'You do not have permission to access this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
+    }
 
     return deck;
 }
 
-export const getAllDecksService = async (userId?: string): Promise<Deck[]> => 
+export const getAllDecksService = async (
+    user?: { 
+        role: string; 
+        uid: string
+    }): Promise<Deck[]> => 
 {
     const snapshot = await getDocuments(COLLECTION);
 
-    const decks = snapshot.docs.filter((doc) => 
-    {
-        const data = doc.data();
-        return data.visibility || data.userId === userId;
-    }).map((doc) => 
+    const decks: Deck[] = snapshot.docs.map((doc) => 
     {
         const data = doc.data();
         return {
@@ -84,16 +109,35 @@ export const getAllDecksService = async (userId?: string): Promise<Deck[]> =>
             createdAt: data.createdAt,
             updatedAt: data.updatedAt
         } as Deck;
-    });
+    }).filter((deck) =>
+        // Filter list of decks by whether or not the current user
+        // has permission to view the deck
+        canView(deck, user)
+    )
 
     return decks;
 };
 
-export const updateDeckService = async (deckId: string, deckData: Partial<Pick<
-    Deck, "visibility" | "description">> ): Promise<Deck | undefined> =>
+export const updateDeckService = async (
+    deckId: string, 
+    deckData: Partial<Pick<Deck, "visibility" | "description">>,
+    user?: {
+        role: string;
+        uid: string;
+    }): Promise<Deck> =>
 {
-    // Check if the deck exists before updating
-    await getDeckService(deckId);
+    // Check if the deck exists
+    const deck: Deck = await findDeckById(deckId);
+
+    // Reject modification to the deck if it does not belong to the user
+    if (!canModify(deck, user)) 
+    {
+        throw new AppError(
+            'You do not have permission to modify this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
+    }
 
     const updateData = {
         ...deckData,
@@ -102,13 +146,29 @@ export const updateDeckService = async (deckId: string, deckData: Partial<Pick<
 
     await updateDocument<Deck>(COLLECTION, deckId, updateData);
 
-    const updatedDeck = await getDeckService(deckId);
+    const updatedDeck: Deck = await getDeckService(deckId, user);
     return updatedDeck;
 };
 
-export const deleteDeckService = async (deckId: string): Promise<void> =>
+export const deleteDeckService = async (
+    deckId: string,
+    user?: {
+        role: string;
+        uid: string;
+    }): Promise<void> =>
 {
-    // Check if the deck exists before deleting
-    await getDeckService(deckId);
+    // Check if the deck exists
+    const deck: Deck = await findDeckById(deckId);
+
+    // Reject deletion of the deck if it does not belong to the user,
+    // and the user does not have a privileged role
+    if (!canDelete(deck, user)) 
+    {
+        throw new AppError(
+            'You do not have permission to delete this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
+    }
     await deleteDocument(COLLECTION, deckId);
 }

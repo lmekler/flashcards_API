@@ -6,8 +6,10 @@ import cors from "cors";
 import { publicCorsOptions, authenticatedCorsOptions } from "../../../config/corsConfig";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
+import { ROLES } from "../../../constants/roles";
 import { validateRequest } from "../middleware/validate";
 import { flashcardSchemas } from "../validation/flashcardSchemas";
+import { ROLES } from "../../../constants/roles";
 import { createFlashcard, getFlashcard, getAllFlashcards,
     updateFlashcard, deleteFlashcard } from "../controllers/flashcardController"
 
@@ -78,12 +80,11 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.post("/", 
+flashcardRouter.post("/",
     cors(authenticatedCorsOptions),
     authenticate(true),
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true
+    isAuthorized(true, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
     }),
     validateRequest(flashcardSchemas.create),
     createFlashcard);
@@ -127,10 +128,13 @@ flashcardRouter.post("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.get("/:cardId", 
-    cors(publicCorsOptions), 
-    authenticate(false), 
-    validateRequest(flashcardSchemas.getById), 
+flashcardRouter.get("/:cardId",
+    cors(publicCorsOptions),
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
+    }),
+    validateRequest(flashcardSchemas.getById),
     getFlashcard);
 
 /**
@@ -191,10 +195,13 @@ flashcardRouter.get("/:cardId",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.get("/", 
-    cors(publicCorsOptions), 
+flashcardRouter.get("/",
+    cors(publicCorsOptions),
     authenticate(false),
-    validateRequest(flashcardSchemas.list), 
+    isAuthorized(false, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
+    }),
+    validateRequest(flashcardSchemas.list),
     getAllFlashcards);
 
 /**
@@ -252,12 +259,11 @@ flashcardRouter.get("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.put("/:cardId", 
+flashcardRouter.put("/:cardId",
     cors(authenticatedCorsOptions),
     authenticate(true),
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true
+    isAuthorized(true, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
     }),
     validateRequest(flashcardSchemas.update),
     updateFlashcard);
@@ -304,12 +310,11 @@ flashcardRouter.put("/:cardId",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.delete("/:cardId", 
+flashcardRouter.delete("/:cardId",
     cors(authenticatedCorsOptions),
     authenticate(true),
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true 
+    isAuthorized(true, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
     }),
     validateRequest(flashcardSchemas.delete),
     deleteFlashcard);

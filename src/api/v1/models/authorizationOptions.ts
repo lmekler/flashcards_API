@@ -1,4 +1,5 @@
+import { ROLES } from "../../../constants/roles";
+
 export interface AuthorizationOptions {
-    hasRole: Array<"admin" | "user">;
-    allowSameUser?: boolean;
+    hasRole?: Array<typeof ROLES.ADMIN | typeof ROLES.USER>;
 }
