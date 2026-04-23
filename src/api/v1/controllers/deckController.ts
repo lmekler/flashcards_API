@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
-import { AppError } from '../errors/errors';
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
 import { Deck } from "../models/deckModel";
 import { successResponse } from "../models/responseModel";
@@ -27,7 +26,6 @@ export const createDeck = async (req: Request,
         const userId = res.locals.uid as string;
         const deckData = req.body;
 
-        // Create a deck with input data
         const deck: Deck = await createDeckService(userId, deckData);
 
         res.status(HTTP_STATUS.CREATED).json
@@ -55,20 +53,10 @@ export const getDeck = async (req: Request,
 {
     try 
     {
-        // Retrieve a deck using the deck ID
         const deckId: string = req.params.deckId.toString();
+        const { role, uid } = res.locals;
 
-        const deck = await getDeckService(deckId);
-
-        // Reject access to the deck if it is private and does not belong to the user
-        if (!deck?.visibility && deck?.userId !== res.locals.uid) 
-        {
-            throw new AppError(
-                'You do not have permission to access this deck', 
-                'FORBIDDEN',
-                HTTP_STATUS.FORBIDDEN
-            );
-        }
+        const deck = await getDeckService(deckId, { role, uid });
 
         res.status(HTTP_STATUS.OK).json
         (
@@ -95,10 +83,9 @@ export const getAllDecks = async (req: Request,
 {
     try
     {
-        const userId = res.locals.uid as string;
+        const { role, uid } = res.locals;
 
-        // Retrieve a list of every deck the user has access to
-        const decks: Deck[] = await getAllDecksService(userId);
+        const decks: Deck[] = await getAllDecksService({ uid, role });
 
         res.status(HTTP_STATUS.OK).json
         (
@@ -125,11 +112,11 @@ export const updateDeck = async (req: Request,
 {
     try 
     {
-        // Update a deck with input data using the deck ID
         const deckId: string = req.params.deckId.toString();
         const updateData= req.body;
+        const { role, uid } = res.locals;
 
-        const updatedDeck = await updateDeckService(deckId, updateData);
+        const updatedDeck = await updateDeckService(deckId, updateData, { role, uid });
 
         res.status(HTTP_STATUS.OK).json
         (
@@ -156,10 +143,10 @@ export const deleteDeck = async (req: Request,
 {
     try 
     {
-        // Delete a deck using the deck ID
         const deckId: string = req.params.deckId.toString();
+        const { role, uid } = res.locals;
 
-        await deleteDeckService(deckId);
+        await deleteDeckService(deckId, { role, uid });
 
         res.status(HTTP_STATUS.OK).json
         (

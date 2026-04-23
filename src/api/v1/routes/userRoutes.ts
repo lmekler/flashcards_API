@@ -14,8 +14,10 @@ userRouter.use("/:userId/decks", deckRouter);
 // Only admins can view detailed user information
 userRouter.get(
     "/:userId",
-    authenticate,
-    isAuthorized({ hasRole: ["admin"] }),
+    authenticate(true),
+    isAuthorized(true, {
+        hasRole: ["admin"]
+    }),
     getUserDetails
 );
 

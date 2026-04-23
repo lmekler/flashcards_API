@@ -2,11 +2,9 @@
 import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
-import { AppError } from "../errors/errors";
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
 import { Flashcard } from "../models/flashcardModel";
 import { successResponse } from "../models/responseModel";
-import { getDeckService } from "../services/deckService";
 import { createFlashcardService, getFlashcardService,
     getAllFlashcardsService, updateFlashcardService,
     deleteFlashcardService } from "../services/flashcardService";
@@ -25,24 +23,26 @@ export const createFlashcard = async (req: Request,
 {
     try 
     {
-        // Create a new flashcard with input data using the deck ID
         const 
         { 
             question,
             answer,
             isMastered
         } = req.body;
-
         const deckId = req.params.deckId.toString();
-
         const flashcardData: Flashcard = 
         { 
             question,
             answer,
             isMastered
         };
+        const { role, uid } = res.locals;
 
-        const flashcardResponse: Flashcard = await createFlashcardService(deckId, flashcardData);
+        const flashcardResponse: Flashcard = await createFlashcardService(
+            deckId, 
+            flashcardData, 
+            { role, uid }
+        );
 
         res.status(HTTP_STATUS.CREATED).json
         (
@@ -69,23 +69,11 @@ export const getFlashcard = async (req: Request,
 {
     try 
     {
-        // Retrieve a deck using the deck ID
-        const deckId = req.params.deckId.toString();
-        const deck = await getDeckService(deckId);
-
-        // Reject access to the deck if it is private and does not belong to the user
-        if (!deck?.visibility && deck?.userId !== res.locals.uid) 
-        {
-            throw new AppError(
-                'You do not have permission to access this deck', 
-                'FORBIDDEN',
-                HTTP_STATUS.FORBIDDEN
-            );
-        }
-
-        // Retrieve a flashcard using the flashcard ID
+        const deckId: string = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
-        const flashcard = await getFlashcardService(deckId, cardId);
+        const { role, uid } = res.locals;
+
+        const flashcard = await getFlashcardService(deckId, cardId, { role, uid });
         
         res.status(HTTP_STATUS.OK).json
         (
@@ -112,22 +100,11 @@ export const getAllFlashcards = async (req: Request,
 {
     try
     {
-        // Retrieve a deck using the deck ID
-        const deckId = req.params.deckId.toString();
-        const deck = await getDeckService(deckId);
+        const deckId: string = req.params.deckId.toString();
+        const { role, uid } = res.locals;
 
-        // Reject access to the deck if it is private and does not belong to the user
-        if (!deck?.visibility && deck?.userId !== res.locals.uid) 
-        {
-            throw new AppError(
-                'You do not have permission to access this deck', 
-                'FORBIDDEN',
-                HTTP_STATUS.FORBIDDEN
-            );
-        }
-                
-        // Retrieve a list of all the flashcards within the deck
-        const flashcards: Flashcard[] = await getAllFlashcardsService(deckId);
+        const flashcards: Flashcard[] = await getAllFlashcardsService(deckId,{ role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(flashcards, "Flashcards retrieved successfully", flashcards.length)
@@ -153,7 +130,6 @@ export const updateFlashcard = async (req: Request,
 {
     try 
     {
-        // Update a flashcard with input data using the deck ID and flashcard ID
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
         const {
@@ -161,8 +137,15 @@ export const updateFlashcard = async (req: Request,
         }: {
             isMastered: boolean;
         } = req.body;
-        
-        const updatedFlashcard = await updateFlashcardService(deckId, cardId, { isMastered });
+        const { role, uid } = res.locals;
+
+        const updatedFlashcard = await updateFlashcardService(
+            deckId, 
+            cardId, 
+            { isMastered }, 
+            { role, uid }
+        );
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(updatedFlashcard, "Flashcard updated successfully")
@@ -188,10 +171,12 @@ export const deleteFlashcard = async (req: Request,
 {
     try 
     {
-        // Delete a flashcard using the deck ID and flashcard ID
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
-        await deleteFlashcardService(deckId, cardId);
+        const { role, uid } = res.locals;
+
+        await deleteFlashcardService(deckId, cardId, { role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(null, "Flashcard deleted successfully")

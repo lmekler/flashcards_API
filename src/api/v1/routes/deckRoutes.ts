@@ -8,6 +8,7 @@ import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { validateRequest } from "../middleware/validate";
 import { deckSchemas } from "../validation/deckSchemas";
+import { ROLES } from "../../../constants/roles";
 import cardRouter from "./flashcardRoutes";
 import { createDeck, getDeck, getAllDecks,
     updateDeck, deleteDeck } from "../controllers/deckController"
@@ -60,7 +61,9 @@ const deckRouter: Router = express.Router();
 deckRouter.post("/", 
     cors(authenticatedCorsOptions),
     authenticate(true),
-    isAuthorized({ hasRole: ["user"] }),
+    isAuthorized(true, { 
+        hasRole: [ROLES.ADMIN, ROLES.USER]
+    }),
     validateRequest(deckSchemas.create),
     createDeck);
  
@@ -90,7 +93,10 @@ deckRouter.post("/",
  */
 deckRouter.get("/:deckId", 
     cors(publicCorsOptions), 
-    authenticate(false), 
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
+    }),
     validateRequest(deckSchemas.getById), 
     getDeck);
 
@@ -146,7 +152,10 @@ deckRouter.get("/:deckId",
  */
 deckRouter.get("/", 
     cors(publicCorsOptions), 
-    authenticate(false), 
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLES.ADMIN, ROLES.USER]
+    }),
     validateRequest(deckSchemas.list), 
     getAllDecks);
 
@@ -204,9 +213,8 @@ deckRouter.get("/",
 deckRouter.put("/:deckId",
     cors(authenticatedCorsOptions), 
     authenticate(true),
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true
+    isAuthorized(true, { 
+        hasRole: [ROLES.ADMIN, ROLES.USER]
     }),
     validateRequest(deckSchemas.update),
     updateDeck);
@@ -252,9 +260,8 @@ deckRouter.put("/:deckId",
 deckRouter.delete("/:deckId", 
     cors(authenticatedCorsOptions),
     authenticate(true),
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true 
+    isAuthorized(true, { 
+        hasRole: [ROLES.ADMIN, ROLES.USER]
     }),
     validateRequest(deckSchemas.delete),
     deleteDeck);
