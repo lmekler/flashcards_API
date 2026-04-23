@@ -35,7 +35,8 @@ export const createFlashcardService = async (
         );
     }
 
-    // Create a new flashcard with input data and unmastered status by default
+    // Create a new flashcard with input data and
+    // unmastered status by default
     const newFlashcard: Flashcard =
     {
         question: flashcardData.question,
@@ -48,7 +49,6 @@ export const createFlashcardService = async (
 
     // Update the card count in the deck any time a flashcard is created
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;
-
     await updateDocument(`decks`, deckId, 
     { 
         cardCount: cardCount
@@ -178,7 +178,6 @@ export const updateFlashcardService = async (
     await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
 
     const updatedFlashcard = await getFlashcardService(deckId, cardId, user);
-
     return updatedFlashcard;
 };
 

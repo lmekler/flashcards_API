@@ -4,11 +4,11 @@ import cors from "cors";
 
 // Internal module imports
 import { publicCorsOptions, authenticatedCorsOptions } from "../../../config/corsConfig";
+import { ROLE } from "../../../constants/roles";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { validateRequest } from "../middleware/validate";
 import { deckSchemas } from "../validation/deckSchemas";
-import { ROLES } from "../../../constants/roles";
 import cardRouter from "./flashcardRoutes";
 import { createDeck, getDeck, getAllDecks,
     updateDeck, deleteDeck } from "../controllers/deckController"
@@ -62,7 +62,7 @@ deckRouter.post("/",
     cors(authenticatedCorsOptions),
     authenticate(true),
     isAuthorized(true, { 
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.create),
     createDeck);
@@ -95,7 +95,7 @@ deckRouter.get("/:deckId",
     cors(publicCorsOptions), 
     authenticate(false),
     isAuthorized(false, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.getById), 
     getDeck);
@@ -154,7 +154,7 @@ deckRouter.get("/",
     cors(publicCorsOptions), 
     authenticate(false),
     isAuthorized(false, {
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.list), 
     getAllDecks);
@@ -214,7 +214,7 @@ deckRouter.put("/:deckId",
     cors(authenticatedCorsOptions), 
     authenticate(true),
     isAuthorized(true, { 
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.update),
     updateDeck);
@@ -261,7 +261,7 @@ deckRouter.delete("/:deckId",
     cors(authenticatedCorsOptions),
     authenticate(true),
     isAuthorized(true, { 
-        hasRole: [ROLES.ADMIN, ROLES.USER]
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.delete),
     deleteDeck);

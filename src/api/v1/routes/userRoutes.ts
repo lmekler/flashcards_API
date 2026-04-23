@@ -2,9 +2,9 @@
 import express, { Router } from "express";
 
 // Internal module imports
+import { ROLE } from "../../../constants/roles";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
-import { ROLES } from "../../../constants/roles";
 import deckRouter from "./deckRoutes";
 import { getUserDetails } from "../controllers/userController";
 
@@ -17,7 +17,7 @@ userRouter.get(
     "/:userId",
     authenticate(true),
     isAuthorized(true, {
-        hasRole: [ROLES.ADMIN]
+        hasRole: [ROLE.ADMIN]
     }),
     getUserDetails
 );

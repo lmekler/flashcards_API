@@ -145,7 +145,6 @@ export const updateDeckService = async (
     await updateDocument<Deck>(COLLECTION.DECK, deckId, updateData);
 
     const updatedDeck: Deck = await getDeckService(deckId, user);
-
     return updatedDeck;
 };
 
@@ -169,6 +168,5 @@ export const deleteDeckService = async (
             HTTP_STATUS.FORBIDDEN
         );
     }
-
     await deleteDocument(COLLECTION.DECK, deckId);
 }
