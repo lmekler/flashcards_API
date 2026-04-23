@@ -1,5 +1,5 @@
 import { Deck } from "../models/deckModel";
-import { ROLE } from "../../../constants/roles";
+import { ROLES } from "../../../constants/roles";
 
 export const canView = (
     deck: Deck, 
