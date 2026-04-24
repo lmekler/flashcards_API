@@ -20,126 +20,77 @@ describe("isAuthorized middleware", () => {
         nextFunction = jest.fn();
     });
 
-    // it("should call next() when user has required role", () => {
-    //     // Arrange
-    //     mockResponse.locals = {
-    //         uid: "user123",
-    //         role: "admin",
-    //     };
+    it("should call next() when user has required role", () => 
+    {
+        // Arrange
+        mockResponse.locals = {
+            uid: "admin_001",
+            role: "admin",
+        };
 
-    //     const middleware = isAuthorized(true, { hasRole: ["admin"] });
+        const middleware = isAuthorized(true, { hasRole: ["admin"] });
 
-    //     // Act
-    //     middleware(
-    //         mockRequest as Request,
-    //         mockResponse as Response,
-    //         nextFunction
-    //     );
+        // Act
+        middleware(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction
+        );
 
-    //     // Assert
-    //     // Called without error
-    //     expect(nextFunction).toHaveBeenCalledWith();
-    // });
+        // Assert
+        expect(nextFunction).toHaveBeenCalledWith();
+    });
 
-    // it("should pass AuthorizationError to next() when user has insufficient role", () => {
-    //     // Arrange
-    //     mockResponse.locals = {
-    //         uid: "user123",
-    //         role: "user",
-    //     };
+    it("should pass AuthorizationError to next() when user has insufficient role", () => 
+    {
+        // Arrange
+        mockResponse.locals = {
+            uid: "user_001",
+            role: "user",
+        };
 
-    //     const middleware = isAuthorized(true, { hasRole: ["admin"] });
+        const middleware = isAuthorized(true, { hasRole: ["admin"] });
 
-    //     // Act
-    //     middleware(
-    //         mockRequest as Request,
-    //         mockResponse as Response,
-    //         nextFunction
-    //     );
+        // Act
+        middleware(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction
+        );
 
-    //     // Assert
-    //     expect(nextFunction).toHaveBeenCalledWith(
-    //         expect.any(AuthorizationError)
-    //     );
-    //     const error = nextFunction.mock.calls[0][0];
-    //     expect(error.message).toBe("Forbidden: Insufficient role");
-    //     expect(error.code).toBe("INSUFFICIENT_ROLE");
-    //     expect(error.statusCode).toBe(403);
-    // });
+        // Assert
+        expect(nextFunction).toHaveBeenCalledWith(
+            expect.any(AuthorizationError)
+        );
 
-    // it("should call next() when same user and allowSameUser is true", () => {
-    //     // Arrange
-    //     mockRequest.params = { id: "user123" };
-    //     // User doesn't have admin role
-    //     mockResponse.locals = {
-    //         uid: "user123",
-    //         role: "user",
-    //     };
+        const error = nextFunction.mock.calls[0][0];
+        expect(error.message).toBe("Forbidden: Insufficient role");
+        expect(error.code).toBe("INSUFFICIENT_ROLE");
+    });
 
-    //     const middleware = isAuthorized(true, {
-    //         hasRole: ["admin"]
-    //     });
+    it("should pass AuthorizationError to next() when role is missing", () => 
+    {
+        // Arrange
+        mockResponse.locals = {
+            uid: "user_001",
+        };
 
-    //     // Act
-    //     middleware(
-    //         mockRequest as Request,
-    //         mockResponse as Response,
-    //         nextFunction
-    //     );
+        const middleware = isAuthorized(true, { hasRole: ["admin"] });
 
-    //     // Assert
-    //     // Should succeed due to allowSameUser
-    //     expect(nextFunction).toHaveBeenCalledWith();
-    // });
+        // Act
+        middleware(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction
+        );
 
-    // it("should pass AuthorizationError to next() when role is missing", () => {
-    //     // Arrange
-    //     mockResponse.locals = {
-    //         uid: "user123",
-    //         // No role property
-    //     };
+        // Assert
+        expect(nextFunction).toHaveBeenCalledWith(
+            expect.any(AuthorizationError)
+        );
 
-    //     const middleware = isAuthorized(true, { hasRole: ["admin"] });
-
-    //     // Act
-    //     middleware(
-    //         mockRequest as Request,
-    //         mockResponse as Response,
-    //         nextFunction
-    //     );
-
-    //     // Assert
-    //     expect(nextFunction).toHaveBeenCalledWith(
-    //         expect.any(AuthorizationError)
-    //     );
-    //     const error = nextFunction.mock.calls[0][0];
-    //     expect(error.message).toBe("Forbidden: No role found");
-    //     expect(error.code).toBe("ROLE_NOT_FOUND");
-    // });
-
-    // it("should not allow same user when allowSameUser is false", () => {
-    //     // Arrange
-    //     mockRequest.params = { id: "user123" };
-    //     mockResponse.locals = {
-    //         uid: "user123",
-    //         role: "user",
-    //     };
-
-    //     // Explicitly disabled
-    //     const middleware = isAuthorized(true, {
-    //         hasRole: ["admin"]
-    //     });
-
-    //     // Act
-    //     middleware(
-    //         mockRequest as Request,
-    //         mockResponse as Response,
-    //         nextFunction
-    //     );
-
-    //     // Assert
-    //     expect(nextFunction).toHaveBeenCalledWith(
-    //         expect.any(AuthorizationError)
-    //     );
-    // });
+        const error = nextFunction.mock.calls[0][0];
+        expect(error.message).toBe("Forbidden: No role found");
+        expect(error.code).toBe("ROLE_NOT_FOUND");
+    });
 });
