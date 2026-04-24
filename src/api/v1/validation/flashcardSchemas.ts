@@ -51,9 +51,21 @@ export const flashcardSchemas = {
             })
         }),
         body: Joi.object({
-            question: Joi.string().min(1).max(500).required(),
-            answer: Joi.string().trim().min(1).max(1000).required(),
-            isMastered: Joi.boolean().optional().default(false)
+            question: Joi.string().min(1).max(500).required().messages({
+                "any.required": "Question is required",
+                "string.empty": "Question cannot be empty",
+                "string.min": "Question must be at least 1 character",
+                "string.max": "Question cannot exceed 500 characters"
+            }),
+            answer: Joi.string().trim().min(1).max(1000).required().messages({
+                "any.required": "Answer is required",
+                "string.empty": "Answer cannot be empty",
+                "string.min": "Answer must be at least 1 character",
+                "string.max": "Answer cannot exceed 1000 characters"
+            }),
+            isMastered: Joi.boolean().optional().default(false).messages({
+                "boolean.base": "isMastered must be a boolean value"
+            }),
         })
     },
 
@@ -97,7 +109,9 @@ export const flashcardSchemas = {
             })
         }),
         body: Joi.object({
-            isMastered: Joi.boolean().optional().default(false)
+            isMastered: Joi.boolean().optional().default(false).messages({
+                "boolean.base": "isMastered must be a boolean value"
+            }),
         }).min(1)
     },
 
