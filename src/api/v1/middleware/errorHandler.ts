@@ -1,4 +1,7 @@
+// External module imports
 import { Request, Response, NextFunction } from "express";
+
+// Internal module imports
 import { AppError } from "../errors/errors";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { errorResponse } from "../models/responseModel";

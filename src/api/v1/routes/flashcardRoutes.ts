@@ -1,8 +1,14 @@
+// External module imports
 import express, { Router } from "express";
+import cors from "cors";
+
+// Internal module imports
+import { publicCorsOptions, authenticatedCorsOptions } from "../../../config/corsConfig";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { validateRequest } from "../middleware/validate";
 import { flashcardSchemas } from "../validation/flashcardSchemas";
+import { ROLE } from "../../../constants/roles";
 import { createFlashcard, getFlashcard, getAllFlashcards,
     updateFlashcard, deleteFlashcard } from "../controllers/flashcardController"
 
@@ -73,11 +79,11 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.post("/", 
-    authenticate,
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true
+flashcardRouter.post("/",
+    cors(authenticatedCorsOptions),
+    authenticate(true),
+    isAuthorized(true, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.create),
     createFlashcard);
@@ -121,7 +127,14 @@ flashcardRouter.post("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.get("/:cardId", validateRequest(flashcardSchemas.getById), getFlashcard);
+flashcardRouter.get("/:cardId",
+    cors(publicCorsOptions),
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
+    }),
+    validateRequest(flashcardSchemas.getById),
+    getFlashcard);
 
 /**
  * @openapi
@@ -181,7 +194,14 @@ flashcardRouter.get("/:cardId", validateRequest(flashcardSchemas.getById), getFl
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcards);
+flashcardRouter.get("/",
+    cors(publicCorsOptions),
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
+    }),
+    validateRequest(flashcardSchemas.list),
+    getAllFlashcards);
 
 /**
  * @openapi
@@ -238,11 +258,11 @@ flashcardRouter.get("/", validateRequest(flashcardSchemas.list), getAllFlashcard
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.put("/:cardId", 
-    authenticate,
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true
+flashcardRouter.put("/:cardId",
+    cors(authenticatedCorsOptions),
+    authenticate(true),
+    isAuthorized(true, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.update),
     updateFlashcard);
@@ -289,11 +309,11 @@ flashcardRouter.put("/:cardId",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-flashcardRouter.delete("/:cardId", 
-    authenticate,
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true 
+flashcardRouter.delete("/:cardId",
+    cors(authenticatedCorsOptions),
+    authenticate(true),
+    isAuthorized(true, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(flashcardSchemas.delete),
     deleteFlashcard);

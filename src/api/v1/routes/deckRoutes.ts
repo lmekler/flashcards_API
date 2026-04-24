@@ -1,9 +1,15 @@
+// External module imports
 import express, { Router } from "express";
+import cors from "cors";
+
+// Internal module imports
+import { publicCorsOptions, authenticatedCorsOptions } from "../../../config/corsConfig";
+import { ROLE } from "../../../constants/roles";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
-import cardRouter from "./flashcardRoutes";
 import { validateRequest } from "../middleware/validate";
 import { deckSchemas } from "../validation/deckSchemas";
+import cardRouter from "./flashcardRoutes";
 import { createDeck, getDeck, getAllDecks,
     updateDeck, deleteDeck } from "../controllers/deckController"
 
@@ -53,10 +59,13 @@ const deckRouter: Router = express.Router();
  *             $ref: '#/components/schemas/Error'
  */
 deckRouter.post("/", 
-    authenticate,
-  isAuthorized({ hasRole: ["user"] }),
-  validateRequest(deckSchemas.create),
-  createDeck);
+    cors(authenticatedCorsOptions),
+    authenticate(true),
+    isAuthorized(true, { 
+        hasRole: [ROLE.ADMIN, ROLE.USER]
+    }),
+    validateRequest(deckSchemas.create),
+    createDeck);
  
 /**
  * @openapi
@@ -82,7 +91,14 @@ deckRouter.post("/",
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-deckRouter.get("/:deckId", validateRequest(deckSchemas.getById), getDeck);
+deckRouter.get("/:deckId", 
+    cors(publicCorsOptions), 
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
+    }),
+    validateRequest(deckSchemas.getById), 
+    getDeck);
 
 /**
  * @openapi
@@ -134,7 +150,14 @@ deckRouter.get("/:deckId", validateRequest(deckSchemas.getById), getDeck);
  *               totalPages:
  *                 type: integer
  */
-deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
+deckRouter.get("/", 
+    cors(publicCorsOptions), 
+    authenticate(false),
+    isAuthorized(false, {
+        hasRole: [ROLE.ADMIN, ROLE.USER]
+    }),
+    validateRequest(deckSchemas.list), 
+    getAllDecks);
 
 /**
  * @openapi
@@ -187,11 +210,11 @@ deckRouter.get("/", validateRequest(deckSchemas.list), getAllDecks);
  *           application/json:
  *             $ref: '#/components/schemas/Error'
  */
-deckRouter.put("/:deckId", 
-    authenticate,
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true
+deckRouter.put("/:deckId",
+    cors(authenticatedCorsOptions), 
+    authenticate(true),
+    isAuthorized(true, { 
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.update),
     updateDeck);
@@ -235,10 +258,10 @@ deckRouter.put("/:deckId",
  *             $ref: '#/components/schemas/Error'
  */
 deckRouter.delete("/:deckId", 
-    authenticate,
-    isAuthorized({ 
-        hasRole: ["user"], 
-        allowSameUser: true 
+    cors(authenticatedCorsOptions),
+    authenticate(true),
+    isAuthorized(true, { 
+        hasRole: [ROLE.ADMIN, ROLE.USER]
     }),
     validateRequest(deckSchemas.delete),
     deleteDeck);

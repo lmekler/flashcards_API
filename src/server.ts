@@ -1,5 +1,8 @@
-import app from "./app";
+// External module imports
 import { Server } from "http";
+
+// Internal module imports
+import app from "./app";
 
 const PORT: string | number = process.env.PORT || 3000;
 

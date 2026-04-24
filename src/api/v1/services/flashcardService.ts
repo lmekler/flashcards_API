@@ -1,11 +1,14 @@
-import { db } from '../../../config/firebaseConfig';
+// Internal module imports
+import { HTTP_STATUS } from '../../../constants/httpConstants';
+import { COLLECTION } from '../../../constants/firestoreCollections';
+import { AppError } from '../errors/errors';
 import { Flashcard } from '../models/flashcardModel';
+import { Deck } from '../models/deckModel';
+import { findDeckById } from "./deckService";
+import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
-
-// Name of the Firestore collection for flashcards
-const COLLECTION = "flashcards";
 
 export const createFlashcardService = async (
     deckId: string,
@@ -13,135 +16,207 @@ export const createFlashcardService = async (
         question: string;
         answer: string;
         isMastered?: boolean;
+    },
+    user?: {
+        role: string;
+        uid: string;
     }): Promise<Flashcard> => 
 {
-    try 
+    // Check if the deck exists
+    const deck = await findDeckById(deckId);
+
+    // Reject modification to the deck if it does not belong to the user
+    if (!canModify(deck, user)) 
     {
-        // create a new flashcard with the provided data and 
-        // an initial isMastered value of false if not provided
-        const newFlashcard: Flashcard =
-        {
-            question: flashcardData.question,
-            answer: flashcardData.answer,
-            isMastered: flashcardData.isMastered ?? false,
-            createdAt: new Date().toISOString()
-        };
-
-        const flashcardDoc = db.collection('decks').doc(deckId).collection('flashcards').doc();
-        flashcardDoc.set(newFlashcard);
-
-        const id = flashcardDoc.id;
-
-        return { id, ...newFlashcard } as Flashcard;
-    } 
-    catch (error: unknown) 
-    {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to create flashcard: ${errorMessage}`);
+        throw new AppError(
+            'You do not have permission to modify this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
     }
+
+    // Create a new flashcard with input data and
+    // unmastered status by default
+    const newFlashcard: Flashcard =
+    {
+        question: flashcardData.question,
+        answer: flashcardData.answer,
+        isMastered: flashcardData.isMastered ?? false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+
+    const id = await createDocument<Flashcard>(COLLECTION.FLASHCARD, newFlashcard);
+
+    // Update the card count in the deck any time a flashcard is created
+    const cardCount = (await getAllFlashcardsService(deckId, user)).length;
+    await updateDocument(COLLECTION.DECK, deckId, 
+    { 
+        cardCount: cardCount
+    });
+
+    return { id, ...newFlashcard } as Flashcard;
 };
 
-export const getFlashcardService = async (deckId: string, 
-    cardId: string): Promise<Flashcard | undefined> =>
+export const getFlashcardService = async (
+    deckId: string, 
+    cardId: string,
+    user?: {
+        role: string;
+        uid: string;
+    }): Promise<Flashcard | undefined> =>
 {
-    try 
+    // Check if the deck exists
+    const deck = await findDeckById(deckId);
+
+    // Reject access to the flashcard if the deck is private, does not belong to the user,
+    // and the user does not have a privileged role
+    if (!canView(deck, user)) 
     {
-        const doc = await db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId).get();
-
-        if (!doc) 
-        {
-            throw new Error(`Flashcard with ID ${cardId} not found`);
-        }
-
-        const data = doc.data();
-
-        const flashcard: Flashcard = {
-            id: doc.id,
-            question: data?.question,
-            answer: data?.answer,
-            isMastered: data?.isMastered,
-            createdAt: data?.createdAt,
-            updatedAt: data?.updatedAt
-        } as Flashcard;
-
-        return flashcard;
-    } 
-    catch (error: unknown) 
-    {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to retrieve the flashcard: ${errorMessage}`);
+        throw new AppError(
+            'You do not have permission to view flashcards in this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
     }
+    
+    const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
+
+    if (!doc) 
+    {
+        throw new AppError(
+            `Flashcard with ID ${cardId} not found`,
+            'FLASHCARD_NOT_FOUND', 
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+
+    const data = doc.data();
+
+    const flashcard: Flashcard = {
+        id: doc.id,
+        question: data?.question,
+        answer: data?.answer,
+        isMastered: data?.isMastered,
+        createdAt: data?.createdAt,
+        updatedAt: data?.updatedAt
+    } as Flashcard;
+
+    return flashcard;
 }
 
-export const getAllFlashcardsService = async (deckId: string): Promise<Flashcard[]> => 
+export const getAllFlashcardsService = async (
+        deckId: string,
+        user?: {
+            role: string;
+            uid: string;
+        }): Promise<Flashcard[]> => 
 {
-    try 
-    {
-        const doc = db.collection('decks').doc(deckId).collection('flashcards');
-        
-        const snapshot = await doc.get();
+    // Check if the deck exists
+    const deck = await findDeckById(deckId);
 
-        const flashcards = snapshot.docs.map((doc) => 
-        {
-            const data = doc.data();
-            return {
-                id: doc.id,
-                question: data.question,
-                answer: data.answer,
-                isMastered: data.isMastered,
-                createdAt: data.createdAt,
-                updatedAt: data.updatedAt
-            } as Flashcard;
-        });
-        return flashcards;
-    } 
-    catch (error: unknown)
+    // Reject access to the flashcard if the deck is private, does not belong to the user,
+    // and the user does not have a privileged role
+    if (!canView(deck, user)) 
     {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to retrieve all flashcards: ${errorMessage}`);
+        throw new AppError(
+            'You do not have permission to view flashcards in this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
     }
+
+    const snapshot = await getDocuments(COLLECTION.FLASHCARD);
+
+    const flashcards = snapshot.docs.map((doc) => 
+    {
+        const data = doc.data();
+        return {
+            id: doc.id,
+            question: data.question,
+            answer: data.answer,
+            isMastered: data.isMastered,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+        } as Flashcard;
+    });
+
+    return flashcards;
 };
 
-export const updateFlashcardService = async (deckId: string, cardId: string, flashcardData:
-    { isMastered: boolean }): Promise<Flashcard | undefined>  => 
+export const updateFlashcardService = async (
+    deckId: string, 
+    cardId: string, 
+    flashcardData: { 
+        isMastered: boolean 
+    },
+    user?: {
+        role: string;
+        uid: string;
+    }): Promise<Flashcard | undefined>  => 
 {
-    try 
-    {
-        const doc = db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId);
-        doc.update(flashcardData);
+    // Check if the deck exists
+    const deck = await findDeckById(deckId);
 
-        // Return the updated flashcard
-        const updatedFlashcard = await getFlashcardService(deckId, cardId);
-        updatedFlashcard!.updatedAt = new Date().toISOString();
-        return updatedFlashcard;
-    } 
-    catch (error: unknown)
+    // Check if the flashcard exists
+    await getFlashcardService(deckId, cardId, user);
+
+    // Reject modification of the flashcard if the deck does not belong to the user
+    if (!canModify(deck, user)) 
     {
-        const errorMessage =error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to update flashcard ${cardId}: ${errorMessage}`);
+        throw new AppError(
+            'You do not have permission to modify flashcards in this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
     }
+
+    const updateData = {
+        ...flashcardData,
+        updatedAt: new Date().toISOString(),
+    };
+    
+    await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
+
+    const updatedFlashcard = await getFlashcardService(deckId, cardId, user);
+    return updatedFlashcard;
 };
 
-export const deleteFlashcardService = async (deckId: string, cardId: string): Promise<void> =>
+export const deleteFlashcardService = async (
+    deckId: string, 
+    cardId: string,
+    user?: {
+        role: string,
+        uid: string;
+    }): Promise<void> =>
 {
-    try 
-    {
-        // Check if flashcard exists before deleting
-        const flashcard = await getFlashcardService(deckId, cardId);
-        if (!flashcard) 
-        {
-            throw new Error(`Flashcard with ID ${cardId} not found`);
-        }
+    // Check if the deck exists
+    const deck = await findDeckById(deckId);
 
-        const doc = db.collection('decks').doc(deckId)
-        .collection('flashcards').doc(cardId);
-        await doc.delete();
-    } 
-    catch (error: unknown)
+    // Check if the flashcard exists
+    await getFlashcardService(deckId, cardId, user);
+
+    // Reject deletion of the flashcard if the deck does not belong to the user,
+    // and the user does not have a privileged role
+    if (!canDelete(deck, user)) 
     {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        throw new Error(`Failed to delete the flashcard: ${errorMessage}`);
+        throw new AppError(
+            'You do not have permission to delete flashcards in this deck', 
+            'FORBIDDEN',
+            HTTP_STATUS.FORBIDDEN
+        );
     }
+
+    await deleteDocument(COLLECTION.FLASHCARD, cardId);
+
+    // Update the card count in the deck any time a flashcard is deleted
+    const cardCount = (await getAllFlashcardsService(deckId, user)).length;
+
+    const updateData = {
+        ...deck,
+        cardCount: cardCount,
+        updatedAt: new Date().toISOString(),
+    };
+    
+    await updateDocument<Deck>(COLLECTION.DECK, deckId, updateData);
 }

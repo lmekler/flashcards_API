@@ -18,14 +18,14 @@ import { AuthorizationError } from "../errors/errors";
  * @param {AuthorizationOptions} opts - The authorization options.
  * @returns {MiddlewareFunction} The middleware function.
  */
-const isAuthorized = (opts: AuthorizationOptions): MiddlewareFunction => {
+const isAuthorized = (required: boolean, opts: AuthorizationOptions): MiddlewareFunction => {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { role, uid } = res.locals;
-            const { id } = req.params;
+            const { role } = res.locals;
 
-            // Allow if the same user is accessing their own data
-            if (opts.allowSameUser && id && uid === id) {
+            // Anonymous users bypass authorization if authorization is not required,
+            // this is used for accessing public decks and flashcards
+            if (!required) {
                 return next();
             }
 
@@ -38,7 +38,7 @@ const isAuthorized = (opts: AuthorizationOptions): MiddlewareFunction => {
             }
 
             // Check if the user's role matches one of the allowed roles
-            if (opts.hasRole.includes(role)) {
+            if (opts.hasRole?.includes(role)) {
                 return next();
             }
 

@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
 import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
-import { Deck, DeckData } from "../models/deckModel";
+import { Deck } from "../models/deckModel";
 import { successResponse } from "../models/responseModel";
 import { createDeckService, getDeckService,
     getAllDecksService, updateDeckService,
@@ -23,27 +23,14 @@ export const createDeck = async (req: Request,
 {
     try 
     {
-        // Create a new deck using the data from the request body
-        const 
-        { 
-            title, 
-            description
-        } = req.body;
+        const userId = res.locals.uid as string;
+        const deckData = req.body;
 
-        // const userId = res.locals.uid as string;
-        const userId = "testUserId";
-
-        const deckData: DeckData = 
-        { 
-            title, 
-            description,
-        };
-
-        const deckResponse: Deck = await createDeckService(userId, deckData);
+        const deck: Deck = await createDeckService(userId, deckData);
 
         res.status(HTTP_STATUS.CREATED).json
         (
-            successResponse(deckResponse, "Deck created successfully")
+            successResponse(deck, "Deck created successfully")
         );
     }
     catch (error: unknown) 
@@ -66,10 +53,11 @@ export const getDeck = async (req: Request,
 {
     try 
     {
-        // Retrieve a deck using the ID from the request parameters
         const deckId: string = req.params.deckId.toString();
-        const deck = await getDeckService(deckId);
-        
+        const { role, uid } = res.locals;
+
+        const deck = await getDeckService(deckId, { role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(deck, "Deck retrieved successfully")
@@ -95,8 +83,10 @@ export const getAllDecks = async (req: Request,
 {
     try
     {
-        // Retrieve a list of all decks
-        const decks: Deck[] = await getAllDecksService();
+        const { role, uid } = res.locals;
+
+        const decks: Deck[] = await getAllDecksService({ role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(decks, "Decks retrieved successfully", decks.length)
@@ -122,16 +112,12 @@ export const updateDeck = async (req: Request,
 {
     try 
     {
-        // Update a deck using the ID from the request 
-        // parameters and data from the request body
         const deckId: string = req.params.deckId.toString();
-        const {
-            description
-        }: {
-            description: string;
-        } = req.body;
-        
-        const updatedDeck = await updateDeckService(deckId, { description });
+        const updateData= req.body;
+        const { role, uid } = res.locals;
+
+        const updatedDeck = await updateDeckService(deckId, updateData, { role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(updatedDeck, "Deck updated successfully")
@@ -157,9 +143,11 @@ export const deleteDeck = async (req: Request,
 {
     try 
     {
-        // Delete a deck using the ID from the request parameters
         const deckId: string = req.params.deckId.toString();
-        await deleteDeckService(deckId);
+        const { role, uid } = res.locals;
+
+        await deleteDeckService(deckId, { role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(null, "Deck deleted successfully")

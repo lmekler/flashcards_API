@@ -23,25 +23,15 @@ export const createFlashcard = async (req: Request,
 {
     try 
     {
-        // Create a new flashcard using the data from the request 
-        // body and deck ID from the request parameters
-        const 
-        { 
-            question,
-            answer,
-            isMastered
-        } = req.body;
-
         const deckId = req.params.deckId.toString();
-
-        const flashcardData: Flashcard = 
-        { 
-            question,
-            answer,
-            isMastered
-        };
-
-        const flashcardResponse: Flashcard = await createFlashcardService(deckId, flashcardData);
+        const flashcardData = req.body;
+        const { role, uid } = res.locals;
+        
+        const flashcardResponse: Flashcard = await createFlashcardService(
+            deckId, 
+            flashcardData, 
+            { role, uid }
+        );
 
         res.status(HTTP_STATUS.CREATED).json
         (
@@ -68,11 +58,11 @@ export const getFlashcard = async (req: Request,
 {
     try 
     {
-        // Retrieve a flashcard using the deck ID and 
-        // flashcard ID from the request parameters
-        const deckId = req.params.deckId.toString();
+        const deckId: string = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
-        const flashcard = await getFlashcardService(deckId, cardId);
+        const { role, uid } = res.locals;
+
+        const flashcard = await getFlashcardService(deckId, cardId, { role, uid });
         
         res.status(HTTP_STATUS.OK).json
         (
@@ -99,10 +89,11 @@ export const getAllFlashcards = async (req: Request,
 {
     try
     {
-        // Retrieve a list of all flashcards for a specific deck 
-        // using the deck ID from the request parameters
-        const deckId = req.params.deckId.toString();
-        const flashcards: Flashcard[] = await getAllFlashcardsService(deckId);
+        const deckId: string = req.params.deckId.toString();
+        const { role, uid } = res.locals;
+
+        const flashcards: Flashcard[] = await getAllFlashcardsService(deckId,{ role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(flashcards, "Flashcards retrieved successfully", flashcards.length)
@@ -128,17 +119,18 @@ export const updateFlashcard = async (req: Request,
 {
     try 
     {
-        // Update a flashcard using the deck ID and flashcard ID from 
-        // the request parameters and data from the request body
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
-        const {
-            isMastered
-        }: {
-            isMastered: boolean;
-        } = req.body;
-        
-        const updatedFlashcard = await updateFlashcardService(deckId, cardId, { isMastered });
+        const updateData = req.body;
+        const { role, uid } = res.locals;
+
+        const updatedFlashcard = await updateFlashcardService(
+            deckId, 
+            cardId, 
+            updateData, 
+            { role, uid }
+        );
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(updatedFlashcard, "Flashcard updated successfully")
@@ -164,11 +156,12 @@ export const deleteFlashcard = async (req: Request,
 {
     try 
     {
-        // Delete a flashcard using the deck ID and 
-        // flashcard ID from the request parameters
         const deckId = req.params.deckId.toString();
         const cardId: string = req.params.cardId.toString();
-        await deleteFlashcardService(deckId, cardId);
+        const { role, uid } = res.locals;
+
+        await deleteFlashcardService(deckId, cardId, { role, uid });
+
         res.status(HTTP_STATUS.OK).json
         (
             successResponse(null, "Flashcard deleted successfully")
