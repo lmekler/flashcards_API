@@ -50,7 +50,7 @@ export const createFlashcardService = async (
 
     // Update the card count in the deck any time a flashcard is created
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;
-    await updateDocument(COLLECTION.DECK, deckId, 
+    await updateDocument(`decks`, deckId, 
     { 
         cardCount: cardCount
     });
