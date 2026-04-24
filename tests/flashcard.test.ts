@@ -492,9 +492,7 @@ describe('Flashcard Service', () =>
 
             (firestoreRepository.getDocumentById as jest.Mock)
                 .mockResolvedValueOnce(deck)
-                .mockResolvedValueOnce(deck)
                 .mockResolvedValueOnce(card)
-                .mockResolvedValueOnce(deck)
                 .mockResolvedValueOnce({
                     id: CARD_001,
                     data: () => updatedCardData
