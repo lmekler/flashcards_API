@@ -85,7 +85,7 @@ export const getAllDecks = async (req: Request,
     {
         const { role, uid } = res.locals;
 
-        const decks: Deck[] = await getAllDecksService({ uid, role });
+        const decks: Deck[] = await getAllDecksService({ role, uid });
 
         res.status(HTTP_STATUS.OK).json
         (

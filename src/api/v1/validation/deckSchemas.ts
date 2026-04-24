@@ -9,9 +9,7 @@ import Joi, { ObjectSchema } from "joi";
  *       type: object
  *       required:
  *         - userId
- *         - visibility
  *         - title
- *         - cardCount
  *       properties:
  *         id:
  *           type: string

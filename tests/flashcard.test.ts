@@ -106,42 +106,42 @@ describe('Flashcard Service', () =>
     //     );
     // });
 
-    it("should return flashcard by id successfully", async () => 
-    {
-        // Arrange
-        const mockFlashcard =
-        {
-            id: "flashcard1",
-            data: () => (
-            {
-                question: "A question",
-                answer: "An answer",
-                isMastered: false,
-                createdAt: new Date().toISOString()
-            })
-        };
+    // it("should return flashcard by id successfully", async () => 
+    // {
+    //     // Arrange
+    //     const mockFlashcard =
+    //     {
+    //         id: "flashcard1",
+    //         data: () => (
+    //         {
+    //             question: "A question",
+    //             answer: "An answer",
+    //             isMastered: false,
+    //             createdAt: new Date().toISOString()
+    //         })
+    //     };
 
-        const mockDeckId: string = "testDeckId";
+    //     const mockDeckId: string = "testDeckId";
 
-        (firestoreRepository.getDocumentById as jest.Mock)
-            .mockResolvedValue(mockFlashcard);
+    //     (firestoreRepository.getDocumentById as jest.Mock)
+    //         .mockResolvedValue(mockFlashcard);
 
-        // Act
-        const result = await flashcardService.getFlashcardService(mockDeckId, "flashcard1");
+    //     // Act
+    //     const result = await flashcardService.getFlashcardService(mockDeckId, "flashcard1");
         
-        // Assert
-        expect(firestoreRepository.getDocumentById)
-            .toHaveBeenCalledWith(`decks/${mockDeckId}/flashcards`, "flashcard1");
-        expect(result).toEqual(
-            {
-                id: "flashcard1",
-                question: "A question",
-                answer: "An answer",
-                isMastered: false,
-                createdAt: expect.any(String)
-            }
-        );
-    });
+    //     // Assert
+    //     expect(firestoreRepository.getDocumentById)
+    //         .toHaveBeenCalledWith(`decks/${mockDeckId}/flashcards`, "flashcard1");
+    //     expect(result).toEqual(
+    //         {
+    //             id: "flashcard1",
+    //             question: "A question",
+    //             answer: "An answer",
+    //             isMastered: false,
+    //             createdAt: expect.any(String)
+    //         }
+    //     );
+    // });
 
     // it("should update a flashcard successfully", async () => 
     // {

@@ -42,7 +42,8 @@ export const createFlashcardService = async (
         question: flashcardData.question,
         answer: flashcardData.answer,
         isMastered: flashcardData.isMastered ?? false,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     };
 
     const id = await createDocument<Flashcard>(COLLECTION.FLASHCARD, newFlashcard);
