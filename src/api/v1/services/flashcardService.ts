@@ -50,13 +50,40 @@ export const createFlashcardService = async (
 
     // Update the card count in the deck any time a flashcard is created
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;
-    await updateDocument(COLLECTION.DECK, deckId, 
+    await updateDocument(`decks`, deckId, 
     { 
         cardCount: cardCount
     });
 
     return { id, ...newFlashcard } as Flashcard;
 };
+
+const findFlashcardById = async (cardId: string): Promise<Flashcard> =>
+{
+    const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
+
+    if (!doc) 
+    {
+        throw new AppError(
+            `Flashcard with ID ${cardId} not found`,
+            'FLASHCARD_NOT_FOUND', 
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+
+    const data = doc.data();
+
+    const flashcard: Flashcard = {
+        id: doc.id,
+        question: data?.question,
+        answer: data?.answer,
+        isMastered: data?.isMastered,
+        createdAt: data?.createdAt,
+        updatedAt: data?.updatedAt
+    } as Flashcard;
+
+    return flashcard;
+}
 
 export const getFlashcardService = async (
     deckId: string, 
@@ -79,28 +106,9 @@ export const getFlashcardService = async (
             HTTP_STATUS.FORBIDDEN
         );
     }
-    
-    const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
 
-    if (!doc) 
-    {
-        throw new AppError(
-            `Flashcard with ID ${cardId} not found`,
-            'FLASHCARD_NOT_FOUND', 
-            HTTP_STATUS.NOT_FOUND
-        );
-    }
-
-    const data = doc.data();
-
-    const flashcard: Flashcard = {
-        id: doc.id,
-        question: data?.question,
-        answer: data?.answer,
-        isMastered: data?.isMastered,
-        createdAt: data?.createdAt,
-        updatedAt: data?.updatedAt
-    } as Flashcard;
+    // Retrieve the flashcard
+    const flashcard = await findFlashcardById(cardId);
 
     return flashcard;
 }
@@ -158,9 +166,6 @@ export const updateFlashcardService = async (
     // Check if the deck exists
     const deck = await findDeckById(deckId);
 
-    // Check if the flashcard exists
-    await getFlashcardService(deckId, cardId, user);
-
     // Reject modification of the flashcard if the deck does not belong to the user
     if (!canModify(deck, user)) 
     {
@@ -171,6 +176,9 @@ export const updateFlashcardService = async (
         );
     }
 
+    // Check if the flashcard exists
+    await findFlashcardById(cardId);
+
     const updateData = {
         ...flashcardData,
         updatedAt: new Date().toISOString(),
@@ -178,7 +186,7 @@ export const updateFlashcardService = async (
     
     await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
 
-    const updatedFlashcard = await getFlashcardService(deckId, cardId, user);
+    const updatedFlashcard = await findFlashcardById(cardId);
     return updatedFlashcard;
 };
 
@@ -193,9 +201,6 @@ export const deleteFlashcardService = async (
     // Check if the deck exists
     const deck = await findDeckById(deckId);
 
-    // Check if the flashcard exists
-    await getFlashcardService(deckId, cardId, user);
-
     // Reject deletion of the flashcard if the deck does not belong to the user,
     // and the user does not have a privileged role
     if (!canDelete(deck, user)) 
@@ -206,6 +211,9 @@ export const deleteFlashcardService = async (
             HTTP_STATUS.FORBIDDEN
         );
     }
+
+    // Check if the flashcard exists
+    await findFlashcardById(cardId);
 
     await deleteDocument(COLLECTION.FLASHCARD, cardId);
 

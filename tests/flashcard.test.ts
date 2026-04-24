@@ -12,6 +12,18 @@ jest.mock('../src/config/firebaseConfig', () => ({ db: {} }));
 jest.mock('../src/api/v1/repositories/firestoreRepository');
 
 // Test data for flashcard service unit tests
+const user_001 = {
+    role: "user",
+    uid: "user_001"
+};
+const user_002 = {
+    role: "user",
+    uid: "user_002"
+};
+const admin = {
+    role: "admin",
+    uid: "admin_001"
+};
 const DECK_001 = "deck_001"
 const CARD_001 = "card_001"
 const deck =
@@ -19,7 +31,7 @@ const deck =
     id: DECK_001,
     data: () => (
     {
-        userId: "user_001",
+        userId: user_001.uid,
         visibility: false,
         title: "Deck 001",
         description: "",
@@ -30,7 +42,7 @@ const deck =
 };
 const deckData =
 {
-    userId: "user_001",
+    userId: user_001.uid,
     visibility: false,
     title: "Deck 001",
     description: "",
@@ -87,18 +99,6 @@ const cardData =
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
 };
-const user_001 = {
-    role: "user",
-    uid: "user_001"
-};
-const user_002 = {
-    role: "user",
-    uid: "user_002"
-};
-const admin = {
-    role: "admin",
-    uid: "admin_001"
-};
 
 describe('Flashcard Service', () => 
 {
@@ -122,12 +122,12 @@ describe('Flashcard Service', () =>
                 .mockResolvedValue(deck);
             
             (firestoreRepository.getDocuments as jest.Mock)
-            .mockResolvedValue({
+            .mockResolvedValueOnce({
                 docs: []
             });
 
             (firestoreRepository.createDocument as jest.Mock)
-                .mockResolvedValue(CARD_001);
+                .mockResolvedValueOnce(CARD_001);
 
             // Act
             const result: Flashcard = await flashcardService.createFlashcardService(
@@ -167,7 +167,7 @@ describe('Flashcard Service', () =>
             };
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(deck);
+                .mockResolvedValueOnce(deck);
 
             // Act & Assert
             await expect(flashcardService.createFlashcardService(
@@ -233,7 +233,7 @@ describe('Flashcard Service', () =>
                 HTTP_STATUS.FORBIDDEN);
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(deck);
+                .mockResolvedValueOnce(deck);
 
             // Act & Assert
             await expect(flashcardService.getFlashcardService(DECK_001, CARD_001))
@@ -248,7 +248,7 @@ describe('Flashcard Service', () =>
                 .mockResolvedValueOnce(deck);
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(card);
+                .mockResolvedValueOnce(card);
 
             // Act
             const result = await flashcardService.getFlashcardService(DECK_001, CARD_001, user_001);
@@ -278,7 +278,7 @@ describe('Flashcard Service', () =>
                 HTTP_STATUS.FORBIDDEN);
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(deck);
+                .mockResolvedValueOnce(deck);
 
             // Act & Assert
             await expect(flashcardService.getFlashcardService(DECK_001, CARD_001, user_002))
@@ -293,7 +293,7 @@ describe('Flashcard Service', () =>
                 .mockResolvedValueOnce(deck);
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(card);
+                .mockResolvedValueOnce(card);
 
             // Act
             const result = await flashcardService.getFlashcardService(DECK_001, CARD_001, admin);
@@ -379,7 +379,7 @@ describe('Flashcard Service', () =>
                 HTTP_STATUS.FORBIDDEN);
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(deck);
+                .mockResolvedValueOnce(deck);
 
             // Act & Assert
              await expect(flashcardService.getAllFlashcardsService(DECK_001))
@@ -433,7 +433,7 @@ describe('Flashcard Service', () =>
                 HTTP_STATUS.FORBIDDEN);
 
             (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValue(deck);
+                .mockResolvedValueOnce(deck);
 
             // Act & Assert
             await expect(flashcardService.getAllFlashcardsService(DECK_001, user_002))
@@ -492,9 +492,7 @@ describe('Flashcard Service', () =>
 
             (firestoreRepository.getDocumentById as jest.Mock)
                 .mockResolvedValueOnce(deck)
-                .mockResolvedValueOnce(deck)
                 .mockResolvedValueOnce(card)
-                .mockResolvedValueOnce(deck)
                 .mockResolvedValueOnce({
                     id: CARD_001,
                     data: () => updatedCardData
@@ -553,80 +551,80 @@ describe('Flashcard Service', () =>
         });
     });
 
-    // describe('Delete Flashcard Service', () =>
-    // {
-    //     it("should delete a flashcard successfully if the deck belongs to the user", async () => 
-    //     {
-    //         // Arrange
-    //         (firestoreRepository.getDocumentById as jest.Mock)
-    //             .mockResolvedValueOnce(deck)
-    //             .mockResolvedValueOnce(deck)
-    //             .mockResolvedValueOnce(card);
+    describe('Delete Flashcard Service', () =>
+    {
+        it("should delete a flashcard successfully if the deck belongs to the user", async () => 
+        {
+             // Arrange
+            (firestoreRepository.getDocumentById as jest.Mock)
+                .mockResolvedValueOnce(deck)
+                .mockResolvedValueOnce(deck)
+                .mockResolvedValueOnce(card);
 
-    //         (firestoreRepository.deleteDocument as jest.Mock)
-    //             .mockResolvedValue(undefined);
+            (firestoreRepository.deleteDocument as jest.Mock)
+                .mockResolvedValueOnce(undefined);
 
-    //         (firestoreRepository.getDocuments as jest.Mock)
-    //         .mockResolvedValue({
-    //             docs: []
-    //         });
+            (firestoreRepository.getDocuments as jest.Mock)
+            .mockResolvedValueOnce({
+                docs: []
+            });
 
-    //         (firestoreRepository.updateDocument as jest.Mock)
-    //             .mockResolvedValue(undefined);
+            (firestoreRepository.updateDocument as jest.Mock)
+                .mockResolvedValueOnce(undefined);
 
-    //         // Act
-    //         await flashcardService.deleteFlashcardService(DECK_001, CARD_001, user_001);
+            // Act
+            await flashcardService.deleteFlashcardService(DECK_001, CARD_001, user_001);
 
-    //         // Assert
-    //         expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
-    //     });
+            // Assert
+            expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
+        });
 
-    //     it("should block deletion of a deck if the deck does not belong to the user"
-    //         + " and the user is not an admin", async () =>
-    //     {
-    //         // Arrange
-    //         const mockError = new AppError(
-    //             'You do not have permission to delete flashcards in this deck', 
-    //             'FORBIDDEN',
-    //             HTTP_STATUS.FORBIDDEN);
+        it("should block deletion of a deck if the deck does not belong to the user"
+            + " and the user is not an admin", async () =>
+        {
+            // Arrange
+            const mockError = new AppError(
+                'You do not have permission to delete flashcards in this deck', 
+                'FORBIDDEN',
+                HTTP_STATUS.FORBIDDEN);
 
-    //         (firestoreRepository.getDocumentById as jest.Mock)
-    //             .mockResolvedValueOnce(deck)
-    //             .mockResolvedValueOnce(deck)
-    //             .mockResolvedValueOnce(card);
+            (firestoreRepository.getDocumentById as jest.Mock)
+                .mockResolvedValueOnce(deck)
+                .mockResolvedValueOnce(deck)
+                .mockResolvedValueOnce(card);
 
-    //         // Act & Assert
-    //         await expect(flashcardService.deleteFlashcardService(
-    //             DECK_001, 
-    //             CARD_001, 
-    //             user_002))
-    //             .rejects.toThrow(mockError);
-    //     });
+            // Act & Assert
+            await expect(flashcardService.deleteFlashcardService(
+                DECK_001, 
+                CARD_001, 
+                user_002))
+                .rejects.toThrow(mockError);
+        });
 
-    //     it("should delete a flashcard successfully if the user is an admin", async () => 
-    //     {
-    //         // Arrange
-    //         (firestoreRepository.getDocumentById as jest.Mock)
-    //             .mockResolvedValueOnce(deck)
-    //             .mockResolvedValueOnce(deck)
-    //             .mockResolvedValueOnce(card);
+        it("should delete a flashcard successfully if the user is an admin", async () => 
+        {
+            // Arrange
+            (firestoreRepository.getDocumentById as jest.Mock)
+                .mockResolvedValueOnce(deck)
+                .mockResolvedValueOnce(deck)
+                .mockResolvedValueOnce(cardData);
 
-    //         (firestoreRepository.deleteDocument as jest.Mock)
-    //             .mockResolvedValue(undefined);
+            (firestoreRepository.deleteDocument as jest.Mock)
+                .mockResolvedValueOnce(undefined);
 
-    //         (firestoreRepository.getDocuments as jest.Mock)
-    //         .mockResolvedValue({
-    //             docs: []
-    //         });
+            (firestoreRepository.getDocuments as jest.Mock)
+                .mockResolvedValueOnce({
+                    docs: []
+                });
 
-    //         (firestoreRepository.updateDocument as jest.Mock)
-    //             .mockResolvedValue(undefined);
+            (firestoreRepository.updateDocument as jest.Mock)
+                .mockResolvedValueOnce(undefined);
 
-    //         // Act
-    //         await flashcardService.deleteFlashcardService(DECK_001, CARD_001, admin);
+            // Act
+            await flashcardService.deleteFlashcardService(DECK_001, CARD_001, admin);
 
-    //         // Assert
-    //         expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
-    //     });
-    // });
+            // Assert
+            expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
+        });
+    });
 });
