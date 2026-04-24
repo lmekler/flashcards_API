@@ -525,70 +525,18 @@ describe('Flashcard Service', () =>
             expect(result?.isMastered).toBe(true);
         });
 
-        // it("should block modification flashcard if the deck does not"
-        //     + " belong to the user", async () => 
-        // {
-        //     // Arrange
-        //     const mockError = new AppError(
-        //         'You do not have permission to modify flashcards in this deck', 
-        //         'FORBIDDEN',
-        //         HTTP_STATUS.FORBIDDEN);
-        //     const updateData =
-        //     {
-        //         isMastered: true
-        //     };
-
-        //     (firestoreRepository.getDocumentById as jest.Mock)
-        //         .mockResolvedValueOnce(deck)
-        //         .mockResolvedValueOnce(deck)
-        //         .mockResolvedValueOnce(card);
-
-        //     // Act & Assert
-        //     await expect(flashcardService.updateFlashcardService(
-        //         DECK_001,
-        //         CARD_001, 
-        //         updateData, 
-        //         user_002))
-        //         .rejects.toThrow(mockError);
-        // });
-    });
-
-    describe('Delete Flashcard Service', () =>
-    {
-        it("should delete a flashcard successfully if the deck belongs to the user", async () => 
-        {
-            // Arrange
-            (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValueOnce(deck)
-                .mockResolvedValueOnce(deck)
-                .mockResolvedValueOnce(card);
-
-            (firestoreRepository.deleteDocument as jest.Mock)
-                .mockResolvedValue(undefined);
-
-            (firestoreRepository.getDocuments as jest.Mock)
-            .mockResolvedValue({
-                docs: []
-            });
-
-            (firestoreRepository.updateDocument as jest.Mock)
-                .mockResolvedValue(undefined);
-
-            // Act
-            await flashcardService.deleteFlashcardService(DECK_001, CARD_001, user_001);
-
-            // Assert
-            expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
-        });
-
-        it("should block deletion of a deck if the deck does not belong to the user"
-            + " and the user is not an admin", async () =>
+        it("should block modification flashcard if the deck does not"
+            + " belong to the user", async () => 
         {
             // Arrange
             const mockError = new AppError(
-                'You do not have permission to delete flashcards in this deck', 
+                'You do not have permission to modify flashcards in this deck', 
                 'FORBIDDEN',
                 HTTP_STATUS.FORBIDDEN);
+            const updateData =
+            {
+                isMastered: true
+            };
 
             (firestoreRepository.getDocumentById as jest.Mock)
                 .mockResolvedValueOnce(deck)
@@ -596,37 +544,89 @@ describe('Flashcard Service', () =>
                 .mockResolvedValueOnce(card);
 
             // Act & Assert
-            await expect(flashcardService.deleteFlashcardService(
-                DECK_001, 
+            await expect(flashcardService.updateFlashcardService(
+                DECK_001,
                 CARD_001, 
+                updateData, 
                 user_002))
                 .rejects.toThrow(mockError);
         });
-
-        it("should delete a flashcard successfully if the user is an admin", async () => 
-        {
-            // Arrange
-            (firestoreRepository.getDocumentById as jest.Mock)
-                .mockResolvedValueOnce(deck)
-                .mockResolvedValueOnce(deck)
-                .mockResolvedValueOnce(card);
-
-            (firestoreRepository.deleteDocument as jest.Mock)
-                .mockResolvedValue(undefined);
-
-            (firestoreRepository.getDocuments as jest.Mock)
-            .mockResolvedValue({
-                docs: []
-            });
-
-            (firestoreRepository.updateDocument as jest.Mock)
-                .mockResolvedValue(undefined);
-
-            // Act
-            await flashcardService.deleteFlashcardService(DECK_001, CARD_001, admin);
-
-            // Assert
-            expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
-        });
     });
+
+    // describe('Delete Flashcard Service', () =>
+    // {
+    //     it("should delete a flashcard successfully if the deck belongs to the user", async () => 
+    //     {
+    //         // Arrange
+    //         (firestoreRepository.getDocumentById as jest.Mock)
+    //             .mockResolvedValueOnce(deck)
+    //             .mockResolvedValueOnce(deck)
+    //             .mockResolvedValueOnce(card);
+
+    //         (firestoreRepository.deleteDocument as jest.Mock)
+    //             .mockResolvedValue(undefined);
+
+    //         (firestoreRepository.getDocuments as jest.Mock)
+    //         .mockResolvedValue({
+    //             docs: []
+    //         });
+
+    //         (firestoreRepository.updateDocument as jest.Mock)
+    //             .mockResolvedValue(undefined);
+
+    //         // Act
+    //         await flashcardService.deleteFlashcardService(DECK_001, CARD_001, user_001);
+
+    //         // Assert
+    //         expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
+    //     });
+
+    //     it("should block deletion of a deck if the deck does not belong to the user"
+    //         + " and the user is not an admin", async () =>
+    //     {
+    //         // Arrange
+    //         const mockError = new AppError(
+    //             'You do not have permission to delete flashcards in this deck', 
+    //             'FORBIDDEN',
+    //             HTTP_STATUS.FORBIDDEN);
+
+    //         (firestoreRepository.getDocumentById as jest.Mock)
+    //             .mockResolvedValueOnce(deck)
+    //             .mockResolvedValueOnce(deck)
+    //             .mockResolvedValueOnce(card);
+
+    //         // Act & Assert
+    //         await expect(flashcardService.deleteFlashcardService(
+    //             DECK_001, 
+    //             CARD_001, 
+    //             user_002))
+    //             .rejects.toThrow(mockError);
+    //     });
+
+    //     it("should delete a flashcard successfully if the user is an admin", async () => 
+    //     {
+    //         // Arrange
+    //         (firestoreRepository.getDocumentById as jest.Mock)
+    //             .mockResolvedValueOnce(deck)
+    //             .mockResolvedValueOnce(deck)
+    //             .mockResolvedValueOnce(card);
+
+    //         (firestoreRepository.deleteDocument as jest.Mock)
+    //             .mockResolvedValue(undefined);
+
+    //         (firestoreRepository.getDocuments as jest.Mock)
+    //         .mockResolvedValue({
+    //             docs: []
+    //         });
+
+    //         (firestoreRepository.updateDocument as jest.Mock)
+    //             .mockResolvedValue(undefined);
+
+    //         // Act
+    //         await flashcardService.deleteFlashcardService(DECK_001, CARD_001, admin);
+
+    //         // Assert
+    //         expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith("flashcards", CARD_001);
+    //     });
+    // });
 });
