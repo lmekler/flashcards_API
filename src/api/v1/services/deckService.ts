@@ -25,7 +25,8 @@ export const createDeckService = async (
         title: deckData.title,
         description: deckData.description ?? '',
         cardCount: 0,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     };
 
     const id = await createDocument<Deck>(COLLECTION.DECK, newDeck);

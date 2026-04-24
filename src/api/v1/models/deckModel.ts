@@ -18,7 +18,7 @@ export interface Deck
     userId: string;
 
     /** Whether the deck is private or public */
-    visibility: boolean;
+    visibility?: boolean;
 
     /** Title of the deck */
     title: string;
@@ -27,7 +27,7 @@ export interface Deck
     description?: string;
 
     /** Number of flashcards in the deck */
-    cardCount: number;
+    cardCount?: number;
 
     /** Timestamp for when the deck was created */
     createdAt?: string;
