@@ -159,12 +159,17 @@ export const getNestedDocumentById = (
  * @returns {Promise<void>}
  */
 export const updateDocument = async <T>(
-    collectionName: string,
+    collectionName: string | FirebaseFirestore.CollectionReference,
     id: string,
     data: Partial<T>
 ): Promise<void> => {
     try {
-        await db.collection(collectionName).doc(id).update(data);
+        const collectionRef = typeof collectionName === "string"
+                ? db.collection(collectionName)
+                : collectionName;
+
+        await collectionRef.doc(id).update(data);
+        // await db.collection(collectionName).doc(id).update(data);
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -172,6 +177,21 @@ export const updateDocument = async <T>(
             `Failed to update document ${id} in ${collectionName}: ${errorMessage}`
         );
     }
+};
+
+export const updateNestedDocument = async <T>(
+    parentCollection: string,
+    parentId: string,
+    nestedCollection: string,
+    documentId: string,
+    data: Partial<T>
+): Promise<void> => {
+    const collectionRef = db
+        .collection(parentCollection)
+        .doc(parentId)
+        .collection(nestedCollection);
+
+    return updateDocument<T>(collectionRef, documentId, data);
 };
 
 /**

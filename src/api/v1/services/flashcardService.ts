@@ -7,7 +7,7 @@ import { Deck } from '../models/deckModel';
 import { findDeckById } from "./deckService";
 import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, createNestedDocument, getDocuments, getNestedDocuments,
-    getDocumentById, getNestedDocumentById, updateDocument,
+    getDocumentById, getNestedDocumentById, updateDocument, updateNestedDocument,
     deleteDocument } from "../repositories/firestoreRepository";
 
 export const createFlashcardService = async (
@@ -204,7 +204,14 @@ export const updateFlashcardService = async (
         updatedAt: new Date().toISOString(),
     };
     
-    await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
+    // await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
+    await updateNestedDocument<Flashcard>(
+        COLLECTION.DECK,
+        deckId,
+        COLLECTION.FLASHCARD,
+        cardId,
+        updateData
+    );
 
     const updatedFlashcard = await findFlashcardById(deckId, cardId);
     return updatedFlashcard;
