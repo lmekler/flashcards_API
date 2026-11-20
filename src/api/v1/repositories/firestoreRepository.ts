@@ -100,6 +100,18 @@ export const getDocuments = async (
     }
 };
 
+export const getNestedDocuments = (
+    parentCollection: string,
+    parentId: string,
+    nestedCollection: string
+) => {
+    return db
+        .collection(parentCollection)
+        .doc(parentId)
+        .collection(nestedCollection)
+        .get();
+};
+
 /**
  * Retrieves a document by its ID from a specified Firestore collection.
  * @param {string} collectionName - The name of the collection.
@@ -123,6 +135,20 @@ export const getDocumentById = async (
             `Failed to fetch document ${id} from ${collectionName}: ${errorMessage}`
         );
     }
+};
+
+export const getNestedDocumentById = (
+    parentCollection: string,
+    parentId: string,
+    nestedCollection: string,
+    documentId: string
+) => {
+    return db
+        .collection(parentCollection)
+        .doc(parentId)
+        .collection(nestedCollection)
+        .doc(documentId)
+        .get();
 };
 
 /**

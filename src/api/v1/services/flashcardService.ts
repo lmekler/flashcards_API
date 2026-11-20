@@ -6,8 +6,8 @@ import { Flashcard } from '../models/flashcardModel';
 import { Deck } from '../models/deckModel';
 import { findDeckById } from "./deckService";
 import { canView, canModify, canDelete } from '../utils/permissions';
-import { createDocument, createNestedDocument, getDocuments,
-    getDocumentById, updateDocument,
+import { createDocument, createNestedDocument, getDocuments, getNestedDocuments,
+    getDocumentById, getNestedDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
 
 export const createFlashcardService = async (
@@ -66,9 +66,15 @@ export const createFlashcardService = async (
 };
 
 
-const findFlashcardById = async (cardId: string): Promise<Flashcard> =>
+const findFlashcardById = async (deckId: string, cardId: string): Promise<Flashcard> =>
 {
-    const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
+    // const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
+    const doc = await getNestedDocumentById(
+        COLLECTION.DECK,
+        deckId,
+        COLLECTION.FLASHCARD,
+        cardId
+    );
 
     if (!doc) 
     {
@@ -116,7 +122,7 @@ export const getFlashcardService = async (
     }
 
     // Retrieve the flashcard
-    const flashcard = await findFlashcardById(cardId);
+    const flashcard = await findFlashcardById(deckId, cardId);
 
     return flashcard;
 }
@@ -142,7 +148,13 @@ export const getAllFlashcardsService = async (
         );
     }
 
-    const snapshot = await getDocuments(COLLECTION.FLASHCARD);
+    // const snapshot = await getDocuments(COLLECTION.FLASHCARD);
+
+    const snapshot = await getNestedDocuments(
+        COLLECTION.DECK,
+        deckId,
+        COLLECTION.FLASHCARD
+    );
 
     const flashcards = snapshot.docs.map((doc) => 
     {
@@ -185,7 +197,7 @@ export const updateFlashcardService = async (
     }
 
     // Check if the flashcard exists
-    await findFlashcardById(cardId);
+    await findFlashcardById(deckId, cardId);
 
     const updateData = {
         ...flashcardData,
@@ -194,7 +206,7 @@ export const updateFlashcardService = async (
     
     await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
 
-    const updatedFlashcard = await findFlashcardById(cardId);
+    const updatedFlashcard = await findFlashcardById(deckId, cardId);
     return updatedFlashcard;
 };
 
@@ -221,7 +233,7 @@ export const deleteFlashcardService = async (
     }
 
     // Check if the flashcard exists
-    await findFlashcardById(cardId);
+    await findFlashcardById(deckId, cardId);
 
     await deleteDocument(COLLECTION.FLASHCARD, cardId);
 
