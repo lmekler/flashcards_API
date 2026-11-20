@@ -8,7 +8,7 @@ import { findDeckById } from "./deckService";
 import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, createNestedDocument, getDocuments, getNestedDocuments,
     getDocumentById, getNestedDocumentById, updateDocument, updateNestedDocument,
-    deleteDocument } from "../repositories/firestoreRepository";
+    deleteDocument, deleteNestedDocument } from "../repositories/firestoreRepository";
 
 export const createFlashcardService = async (
     deckId: string,
@@ -242,7 +242,13 @@ export const deleteFlashcardService = async (
     // Check if the flashcard exists
     await findFlashcardById(deckId, cardId);
 
-    await deleteDocument(COLLECTION.FLASHCARD, cardId);
+    // await deleteDocument(COLLECTION.FLASHCARD, cardId);
+    await deleteNestedDocument(
+        COLLECTION.DECK,
+        deckId,
+        COLLECTION.FLASHCARD,
+        cardId
+    );
 
     // Update the card count in the deck any time a flashcard is deleted
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;

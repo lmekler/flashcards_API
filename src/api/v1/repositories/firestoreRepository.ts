@@ -203,14 +203,21 @@ export const updateNestedDocument = async <T>(
  * @returns {Promise<void>}
  */
 export const deleteDocument = async (
-    collectionName: string,
+    collectionName: string | FirebaseFirestore.CollectionReference,
     id: string,
     transaction?: FirebaseFirestore.Transaction
 ): Promise<void> => {
     try {
-        const docRef: FirebaseFirestore.DocumentReference = db
-            .collection(collectionName)
-            .doc(id);
+        const collectionRef =
+            typeof collectionName === "string"
+                ? db.collection(collectionName)
+                : collectionName;
+
+        const docRef = collectionRef.doc(id);
+
+        // const docRef: FirebaseFirestore.DocumentReference = db
+        //     .collection(collectionName)
+        //     .doc(id);
         if (transaction) {
             transaction.delete(docRef);
         } else {
@@ -223,6 +230,20 @@ export const deleteDocument = async (
             `Failed to delete document ${id} from ${collectionName}: ${errorMessage}`
         );
     }
+};
+
+export const deleteNestedDocument = (
+    parentCollection: string,
+    parentId: string,
+    nestedCollection: string,
+    documentId: string
+): Promise<void> => {
+    const collectionRef = db
+        .collection(parentCollection)
+        .doc(parentId)
+        .collection(nestedCollection);
+
+    return deleteDocument(collectionRef, documentId);
 };
 
 /**
