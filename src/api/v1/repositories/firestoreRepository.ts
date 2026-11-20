@@ -46,17 +46,6 @@ export const createDocument = async <T>(
 
         await docRef.set(data);
         return docRef.id;
-
-        // let docRef: FirebaseFirestore.DocumentReference;
-
-        // if (id) {
-        //     docRef = collectionRef.doc(id);
-        //     await docRef.set(data);
-        // } else {
-        //     docRef = await collectionRef.add(data);
-        // }
-
-        // return docRef.id;
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -169,7 +158,6 @@ export const updateDocument = async <T>(
                 : collectionName;
 
         await collectionRef.doc(id).update(data);
-        // await db.collection(collectionName).doc(id).update(data);
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -215,9 +203,6 @@ export const deleteDocument = async (
 
         const docRef = collectionRef.doc(id);
 
-        // const docRef: FirebaseFirestore.DocumentReference = db
-        //     .collection(collectionName)
-        //     .doc(id);
         if (transaction) {
             transaction.delete(docRef);
         } else {

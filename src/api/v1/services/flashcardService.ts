@@ -6,9 +6,9 @@ import { Flashcard } from '../models/flashcardModel';
 import { Deck } from '../models/deckModel';
 import { findDeckById } from "./deckService";
 import { canView, canModify, canDelete } from '../utils/permissions';
-import { createDocument, createNestedDocument, getDocuments, getNestedDocuments,
-    getDocumentById, getNestedDocumentById, updateDocument, updateNestedDocument,
-    deleteDocument, deleteNestedDocument } from "../repositories/firestoreRepository";
+import { createNestedDocument, getNestedDocuments,
+    getNestedDocumentById, updateDocument, updateNestedDocument,
+    deleteNestedDocument } from "../repositories/firestoreRepository";
 
 export const createFlashcardService = async (
     deckId: string,
@@ -46,8 +46,6 @@ export const createFlashcardService = async (
         updatedAt: new Date().toISOString(),
     };
 
-    // const id = await createDocument<Flashcard>(COLLECTION.FLASHCARD, newFlashcard);
-
     const id = await createNestedDocument<Flashcard>(
     COLLECTION.DECK,
     deckId,
@@ -68,7 +66,6 @@ export const createFlashcardService = async (
 
 const findFlashcardById = async (deckId: string, cardId: string): Promise<Flashcard> =>
 {
-    // const doc = await getDocumentById(COLLECTION.FLASHCARD, cardId);
     const doc = await getNestedDocumentById(
         COLLECTION.DECK,
         deckId,
@@ -148,8 +145,6 @@ export const getAllFlashcardsService = async (
         );
     }
 
-    // const snapshot = await getDocuments(COLLECTION.FLASHCARD);
-
     const snapshot = await getNestedDocuments(
         COLLECTION.DECK,
         deckId,
@@ -204,7 +199,6 @@ export const updateFlashcardService = async (
         updatedAt: new Date().toISOString(),
     };
     
-    // await updateDocument<Flashcard>(COLLECTION.FLASHCARD, cardId, updateData);
     await updateNestedDocument<Flashcard>(
         COLLECTION.DECK,
         deckId,
@@ -242,7 +236,6 @@ export const deleteFlashcardService = async (
     // Check if the flashcard exists
     await findFlashcardById(deckId, cardId);
 
-    // await deleteDocument(COLLECTION.FLASHCARD, cardId);
     await deleteNestedDocument(
         COLLECTION.DECK,
         deckId,
