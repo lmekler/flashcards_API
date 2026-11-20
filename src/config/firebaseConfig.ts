@@ -48,7 +48,7 @@ const getFirebaseConfig = (): AppOptions => {
         projectId: FIREBASE_PROJECT_ID,
         clientEmail: FIREBASE_CLIENT_EMAIL,
         // Replace escaped newlines in the private key string with actual newlines
-        privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+        privateKey: FIREBASE_PRIVATE_KEY.replace(/^"/, "").replace(/\\n/g, "\n"),
     };
 
     // Return the app configuration with credentials
