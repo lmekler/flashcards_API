@@ -2,12 +2,16 @@
 import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
-import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
+import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { Flashcard } from "../models/flashcardModel";
 import { successResponse } from "../models/responseModel";
-import { createFlashcardService, getFlashcardService,
-    getAllFlashcardsService, updateFlashcardService,
-    deleteFlashcardService } from "../services/flashcardService";
+import {
+  createFlashcardService,
+  getFlashcardService,
+  getAllFlashcardsService,
+  updateFlashcardService,
+  deleteFlashcardService,
+} from "../services/flashcardService";
 
 /**
  * Handles creating a new flashcard.
@@ -18,30 +22,30 @@ import { createFlashcardService, getFlashcardService,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const createFlashcard = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> => 
-{
-    try 
-    {
-        const deckId = req.params.deckId.toString();
-        const flashcardData = req.body;
-        const { role, uid } = res.locals;
-        
-        const flashcardResponse: Flashcard = await createFlashcardService(
-            deckId, 
-            flashcardData, 
-            { role, uid }
-        );
+export const createFlashcard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId = req.params.deckId.toString();
+    const flashcardData = req.body;
+    const { role, uid } = res.locals;
 
-        res.status(HTTP_STATUS.CREATED).json
-        (
-            successResponse(flashcardResponse, "Flashcard created successfully")
-        );
-    }
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    const flashcardResponse: Flashcard = await createFlashcardService(
+      deckId,
+      flashcardData,
+      { role, uid },
+    );
+
+    res
+      .status(HTTP_STATUS.CREATED)
+      .json(
+        successResponse(flashcardResponse, "Flashcard created successfully"),
+      );
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -53,26 +57,24 @@ export const createFlashcard = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const getFlashcard = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> =>
-{
-    try 
-    {
-        const deckId: string = req.params.deckId.toString();
-        const cardId: string = req.params.cardId.toString();
-        const { role, uid } = res.locals;
+export const getFlashcard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId: string = req.params.deckId.toString();
+    const cardId: string = req.params.cardId.toString();
+    const { role, uid } = res.locals;
 
-        const flashcard = await getFlashcardService(deckId, cardId, { role, uid });
-        
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(flashcard, "Flashcard retrieved successfully")
-        );
-    } 
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    const flashcard = await getFlashcardService(deckId, cardId, { role, uid });
+
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(flashcard, "Flashcard retrieved successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -84,25 +86,32 @@ export const getFlashcard = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const getAllFlashcards = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> => 
-{
-    try
-    {
-        const deckId: string = req.params.deckId.toString();
-        const { role, uid } = res.locals;
+export const getAllFlashcards = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId: string = req.params.deckId.toString();
+    const { role, uid } = res.locals;
 
-        const flashcards: Flashcard[] = await getAllFlashcardsService(deckId,{ role, uid });
+    const flashcards: Flashcard[] = await getAllFlashcardsService(deckId, {
+      role,
+      uid,
+    });
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(flashcards, "Flashcards retrieved successfully", flashcards.length)
-        );
-    }
-    catch (error: unknown)
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(
+        successResponse(
+          flashcards,
+          "Flashcards retrieved successfully",
+          flashcards.length,
+        ),
+      );
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -114,32 +123,32 @@ export const getAllFlashcards = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const updateFlashcard = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> =>
-{
-    try 
-    {
-        const deckId = req.params.deckId.toString();
-        const cardId: string = req.params.cardId.toString();
-        const updateData = req.body;
-        const { role, uid } = res.locals;
+export const updateFlashcard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId = req.params.deckId.toString();
+    const cardId: string = req.params.cardId.toString();
+    const updateData = req.body;
+    const { role, uid } = res.locals;
 
-        const updatedFlashcard = await updateFlashcardService(
-            deckId, 
-            cardId, 
-            updateData, 
-            { role, uid }
-        );
+    const updatedFlashcard = await updateFlashcardService(
+      deckId,
+      cardId,
+      updateData,
+      { role, uid },
+    );
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(updatedFlashcard, "Flashcard updated successfully")
-        );
-    } 
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(
+        successResponse(updatedFlashcard, "Flashcard updated successfully"),
+      );
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -151,24 +160,22 @@ export const updateFlashcard = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const deleteFlashcard = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> =>
-{
-    try 
-    {
-        const deckId = req.params.deckId.toString();
-        const cardId: string = req.params.cardId.toString();
-        const { role, uid } = res.locals;
+export const deleteFlashcard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId = req.params.deckId.toString();
+    const cardId: string = req.params.cardId.toString();
+    const { role, uid } = res.locals;
 
-        await deleteFlashcardService(deckId, cardId, { role, uid });
+    await deleteFlashcardService(deckId, cardId, { role, uid });
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(null, "Flashcard deleted successfully")
-        );
-    } 
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(null, "Flashcard deleted successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
 };
