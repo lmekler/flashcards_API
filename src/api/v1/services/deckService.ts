@@ -7,6 +7,7 @@ import { canView, canModify, canDelete } from '../utils/permissions';
 import { createDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
+import { deleteFlashcardService, getAllFlashcardsService } from './flashcardService';
 
 export const createDeckService = async (
     userId: string,
@@ -18,7 +19,7 @@ export const createDeckService = async (
 {
     // Create a new deck with input data, an initial card
     // count of 0, and public access by default
-    const newDeck: Deck =
+    const newDeck: Omit<Deck, "id"> =
     {
         userId: userId,
         visibility: deckData.visibility ?? true,
@@ -169,5 +170,14 @@ export const deleteDeckService = async (
             HTTP_STATUS.FORBIDDEN
         );
     }
+
+    // Delete all flashcards in a deck before deleting the deck
+    const flashcards = await getAllFlashcardsService(deckId, user)
+    
+    for (const flashcard of flashcards)
+    {
+      await deleteFlashcardService(deckId, flashcard.id, user)
+    }
+
     await deleteDocument(COLLECTION.DECK, deckId);
 }

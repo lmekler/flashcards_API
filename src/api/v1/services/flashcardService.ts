@@ -37,7 +37,7 @@ export const createFlashcardService = async (
 
     // Create a new flashcard with input data and
     // unmastered status by default
-    const newFlashcard: Flashcard =
+    const newFlashcard:  Omit<Flashcard, "id">  =
     {
         question: flashcardData.question,
         answer: flashcardData.answer,
@@ -125,11 +125,11 @@ export const getFlashcardService = async (
 }
 
 export const getAllFlashcardsService = async (
-        deckId: string,
-        user?: {
-            role: string;
-            uid: string;
-        }): Promise<Flashcard[]> => 
+    deckId: string,
+    user?: {
+        role: string;
+        uid: string;
+    }): Promise<Flashcard[]> => 
 {
     // Check if the deck exists
     const deck = await findDeckById(deckId);

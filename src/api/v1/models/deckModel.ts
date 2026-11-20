@@ -12,7 +12,7 @@
 export interface Deck
 {
     /** Unique ID for the deck */
-    id?: string;
+    id: string;
 
     /** ID of the user who owns the deck */
     userId: string;

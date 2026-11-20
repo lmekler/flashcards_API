@@ -10,7 +10,7 @@
 export interface Flashcard
 {
     /** Unique ID for the flashcard */
-    id?: string;
+    id: string;
 
     /** The question on the flashcard */
     question: string;
