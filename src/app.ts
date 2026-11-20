@@ -2,16 +2,20 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 dotenv.config();
 
 // Internal module imports
 import { helmetConfig } from "./config/helmetConfig";
-import { publicCorsOptions, authenticatedCorsOptions } from "./config/corsConfig";
 import {
-    accessLogger,
-    errorLogger,
-    consoleLogger,
+  publicCorsOptions,
+  authenticatedCorsOptions,
+} from "./config/corsConfig";
+import {
+  accessLogger,
+  errorLogger,
+  consoleLogger,
 } from "./api/v1/middleware/logger";
 import errorHandler from "./api/v1/middleware/errorHandler";
 import setupSwagger from "./config/swagger";
@@ -25,26 +29,32 @@ const app: Express = express();
 // Apply Helmet security
 app.use(helmetConfig());
 
+// Serve the generated API documentation
+app.use("/docs", express.static(path.join(__dirname, "../docs")));
+
+// Send visitors who open the bare URL to the docs
+app.get("/", (_req, res) => {
+  res.redirect("/docs");
+});
+
 // Logging middleware
 if (process.env.NODE_ENV === "production") {
-    // In production, log to files
-    app.use(accessLogger);
-    app.use(errorLogger);
+  // In production, log to files
+  app.use(accessLogger);
+  app.use(errorLogger);
 } else {
-    // In development, log to console for immediate feedback
-    app.use(consoleLogger);
+  // In development, log to console for immediate feedback
+  app.use(consoleLogger);
 }
 
 // Health check endpoint with public CORS configuration
-app.get("/api/v1/health",
-    cors(publicCorsOptions),
-    (req, res) => {
-    res.json({
-        status: "OK",
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-        version: "1.0.0",
-    });
+app.get("/api/v1/health", cors(publicCorsOptions), (req, res) => {
+  res.json({
+    status: "OK",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    version: "1.0.0",
+  });
 });
 
 // Body parsing middleware
