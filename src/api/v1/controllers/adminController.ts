@@ -19,23 +19,25 @@ import { HTTP_STATUS } from "../../../constants/httpConstants";
  * @returns {Promise<void>}
  */
 export const setCustomClaims = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): Promise<void> => {
-    const { uid, claims } = req.body;
+  const { uid, claims } = req.body;
 
-    try {
-        // Set custom claims on the user's Firebase account
-        await auth.setCustomUserClaims(uid, claims);
+  try {
+    // Set custom claims on the user's Firebase account
+    await auth.setCustomUserClaims(uid, claims);
 
-        res.status(HTTP_STATUS.OK).json(
-            successResponse(
-                {},
-                `Custom claims set for user: ${uid}. User must obtain a new token for changes to take effect.`
-            )
-        );
-    } catch (error) {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(
+        successResponse(
+          {},
+          `Custom claims set for user: ${uid}. User must obtain a new token for changes to take effect.`,
+        ),
+      );
+  } catch (error) {
+    next(error);
+  }
 };

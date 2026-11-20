@@ -18,18 +18,18 @@ import { HTTP_STATUS } from "../../../constants/httpConstants";
  * @returns {Promise<void>}
  */
 export const getUserDetails = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): Promise<void> => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        // Fetch user record from Firebase Authentication
-        const user: UserRecord = await auth.getUser(id as string);
-        res.status(HTTP_STATUS.OK).json(successResponse(user));
-    } catch (error) {
-        // Pass any errors to the centralized error handler
-        next(error);
-    }
+  try {
+    // Fetch user record from Firebase Authentication
+    const user: UserRecord = await auth.getUser(id as string);
+    res.status(HTTP_STATUS.OK).json(successResponse(user));
+  } catch (error) {
+    // Pass any errors to the centralized error handler
+    next(error);
+  }
 };

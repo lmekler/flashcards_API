@@ -2,12 +2,16 @@
 import { Request, Response, NextFunction } from "express";
 
 // Internal module imports
-import { HTTP_STATUS } from "../../../../src/constants/httpConstants";
+import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { Deck } from "../models/deckModel";
 import { successResponse } from "../models/responseModel";
-import { createDeckService, getDeckService,
-    getAllDecksService, updateDeckService,
-    deleteDeckService } from "../services/deckService";
+import {
+  createDeckService,
+  getDeckService,
+  getAllDecksService,
+  updateDeckService,
+  deleteDeckService,
+} from "../services/deckService";
 
 /**
  * Handles creating a new deck.
@@ -18,25 +22,23 @@ import { createDeckService, getDeckService,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const createDeck = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> => 
-{
-    try 
-    {
-        const userId = res.locals.uid as string;
-        const deckData = req.body;
+export const createDeck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = res.locals.uid as string;
+    const deckData = req.body;
 
-        const deck: Deck = await createDeckService(userId, deckData);
+    const deck: Deck = await createDeckService(userId, deckData);
 
-        res.status(HTTP_STATUS.CREATED).json
-        (
-            successResponse(deck, "Deck created successfully")
-        );
-    }
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.CREATED)
+      .json(successResponse(deck, "Deck created successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -48,25 +50,23 @@ export const createDeck = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const getDeck = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> =>
-{
-    try 
-    {
-        const deckId: string = req.params.deckId.toString();
-        const { role, uid } = res.locals;
+export const getDeck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId: string = req.params.deckId.toString();
+    const { role, uid } = res.locals;
 
-        const deck = await getDeckService(deckId, { role, uid });
+    const deck = await getDeckService(deckId, { role, uid });
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(deck, "Deck retrieved successfully")
-        );
-    } 
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(deck, "Deck retrieved successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -78,24 +78,24 @@ export const getDeck = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const getAllDecks = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> => 
-{
-    try
-    {
-        const { role, uid } = res.locals;
+export const getAllDecks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { role, uid } = res.locals;
 
-        const decks: Deck[] = await getAllDecksService({ role, uid });
+    const decks: Deck[] = await getAllDecksService({ role, uid });
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(decks, "Decks retrieved successfully", decks.length)
-        );
-    }
-    catch (error: unknown)
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(
+        successResponse(decks, "Decks retrieved successfully", decks.length),
+      );
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -107,26 +107,27 @@ export const getAllDecks = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const updateDeck = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> =>
-{
-    try 
-    {
-        const deckId: string = req.params.deckId.toString();
-        const updateData= req.body;
-        const { role, uid } = res.locals;
+export const updateDeck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId: string = req.params.deckId.toString();
+    const updateData = req.body;
+    const { role, uid } = res.locals;
 
-        const updatedDeck = await updateDeckService(deckId, updateData, { role, uid });
+    const updatedDeck = await updateDeckService(deckId, updateData, {
+      role,
+      uid,
+    });
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(updatedDeck, "Deck updated successfully")
-        );
-    } 
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(updatedDeck, "Deck updated successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
 };
 
 /**
@@ -138,23 +139,21 @@ export const updateDeck = async (req: Request,
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
-export const deleteDeck = async (req: Request, 
-    res: Response, next: NextFunction): Promise<void> =>
-{
-    try 
-    {
-        const deckId: string = req.params.deckId.toString();
-        const { role, uid } = res.locals;
+export const deleteDeck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const deckId: string = req.params.deckId.toString();
+    const { role, uid } = res.locals;
 
-        await deleteDeckService(deckId, { role, uid });
+    await deleteDeckService(deckId, { role, uid });
 
-        res.status(HTTP_STATUS.OK).json
-        (
-            successResponse(null, "Deck deleted successfully")
-        );
-    } 
-    catch (error: unknown) 
-    {
-        next(error);
-    }
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(null, "Deck deleted successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
 };
