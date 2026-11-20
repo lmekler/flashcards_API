@@ -6,7 +6,7 @@ import { Flashcard } from '../models/flashcardModel';
 import { Deck } from '../models/deckModel';
 import { findDeckById } from "./deckService";
 import { canView, canModify, canDelete } from '../utils/permissions';
-import { createDocument, getDocuments,
+import { createDocument, createNestedDocument, getDocuments,
     getDocumentById, updateDocument,
     deleteDocument } from "../repositories/firestoreRepository";
 
@@ -46,7 +46,14 @@ export const createFlashcardService = async (
         updatedAt: new Date().toISOString(),
     };
 
-    const id = await createDocument<Flashcard>(COLLECTION.FLASHCARD, newFlashcard);
+    // const id = await createDocument<Flashcard>(COLLECTION.FLASHCARD, newFlashcard);
+
+    const id = await createNestedDocument<Flashcard>(
+    COLLECTION.DECK,
+    deckId,
+    COLLECTION.FLASHCARD,
+    newFlashcard
+);
 
     // Update the card count in the deck any time a flashcard is created
     const cardCount = (await getAllFlashcardsService(deckId, user)).length;
@@ -57,6 +64,7 @@ export const createFlashcardService = async (
 
     return { id, ...newFlashcard } as Flashcard;
 };
+
 
 const findFlashcardById = async (cardId: string): Promise<Flashcard> =>
 {

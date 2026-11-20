@@ -31,21 +31,32 @@ export const runTransaction = async <T>(
  * @returns {Promise<string>} - The ID of the newly created document.
  */
 export const createDocument = async <T>(
-    collectionName: string,
+    collectionName: string | FirebaseFirestore.CollectionReference,
     data: Partial<T>,
     id?: string
 ): Promise<string> => {
     try {
-        let docRef: FirebaseFirestore.DocumentReference;
+        const collectionRef = typeof collectionName === "string"
+            ? db.collection(collectionName)
+            : collectionName;
 
-        if (id) {
-            docRef = db.collection(collectionName).doc(id);
-            await docRef.set(data);
-        } else {
-            docRef = await db.collection(collectionName).add(data);
-        }
+        const docRef = id
+            ? collectionRef.doc(id)
+            : collectionRef.doc();
 
+        await docRef.set(data);
         return docRef.id;
+
+        // let docRef: FirebaseFirestore.DocumentReference;
+
+        // if (id) {
+        //     docRef = collectionRef.doc(id);
+        //     await docRef.set(data);
+        // } else {
+        //     docRef = await collectionRef.add(data);
+        // }
+
+        // return docRef.id;
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -53,6 +64,21 @@ export const createDocument = async <T>(
             `Failed to create document in ${collectionName}: ${errorMessage}`
         );
     }
+};
+
+export const createNestedDocument = <T>(
+    parentCollection: string,
+    parentId: string,
+    nestedCollection: string,
+    data: Partial<T>,
+    id?: string
+): Promise<string> => {
+    const collectionRef = db
+        .collection(parentCollection)
+        .doc(parentId)
+        .collection(nestedCollection);
+
+    return createDocument<T>(collectionRef, data, id);
 };
 
 /**
