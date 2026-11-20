@@ -26,23 +26,22 @@ export const runTransaction = async <T>(
 
 /**
  * Creates a new document in a specified Firestore collection.
+ * Accepts either a collection name or a CollectionReference.
+ * @param {string | FirebaseFirestore.CollectionReference} collectionName - The collection name or reference.
  * @param {string} collectionName - The name of the collection.
  * @param {Partial<T>} data - The data for the new document.
  * @returns {Promise<string>} - The ID of the newly created document.
  */
 export const createDocument = async <T>(
     collectionName: string | FirebaseFirestore.CollectionReference,
-    data: Partial<T>,
-    id?: string
+    data: Partial<T>
 ): Promise<string> => {
     try {
         const collectionRef = typeof collectionName === "string"
             ? db.collection(collectionName)
             : collectionName;
 
-        const docRef = id
-            ? collectionRef.doc(id)
-            : collectionRef.doc();
+        const docRef = collectionRef.doc();
 
         await docRef.set(data);
         return docRef.id;
@@ -55,31 +54,43 @@ export const createDocument = async <T>(
     }
 };
 
+/**
+ * Creates a document in a nested Firestore collection.
+ * @param {string} parentCollection - The name of the parent collection.
+ * @param {string} parentId - The ID of the parent document.
+ * @param {string} nestedCollection - The name of the nested collection.
+ * @param {Partial<T>} data - The data for the new document.
+ * @returns {Promise<string>} The ID of the newly created document.
+ */
 export const createNestedDocument = <T>(
     parentCollection: string,
     parentId: string,
     nestedCollection: string,
     data: Partial<T>,
-    id?: string
 ): Promise<string> => {
     const collectionRef = db
         .collection(parentCollection)
         .doc(parentId)
         .collection(nestedCollection);
 
-    return createDocument<T>(collectionRef, data, id);
+    return createDocument<T>(collectionRef, data);
 };
 
 /**
  * Retrieves all documents from a specified Firestore collection.
- * @param {string} collectionName - The name of the collection.
+ * Accepts either a collection name or a CollectionReference.
+ * @param {string | FirebaseFirestore.CollectionReference} collectionName - The collection name or reference.
  * @returns {Promise<FirebaseFirestore.QuerySnapshot>} - A QuerySnapshot containing all documents.
  */
 export const getDocuments = async (
-    collectionName: string
+    collectionName: string | FirebaseFirestore.CollectionReference
 ): Promise<FirebaseFirestore.QuerySnapshot> => {
     try {
-        return await db.collection(collectionName).get();
+        const collectionRef = typeof collectionName === "string"
+            ? db.collection(collectionName)
+            : collectionName;
+
+        return await collectionRef.get();
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -89,34 +100,44 @@ export const getDocuments = async (
     }
 };
 
+/**
+ * Retrieves all documents from a nested Firestore collection.
+ * @param {string} parentCollection - The parent collection name.
+ * @param {string} parentId - The parent document ID.
+ * @param {string} nestedCollection - The nested collection name.
+ * @returns {Promise<FirebaseFirestore.QuerySnapshot>} The documents in the nested collection.
+ */
 export const getNestedDocuments = (
     parentCollection: string,
     parentId: string,
     nestedCollection: string
-) => {
-    return db
+): Promise<FirebaseFirestore.QuerySnapshot> => {
+    const collectionRef = db
         .collection(parentCollection)
         .doc(parentId)
-        .collection(nestedCollection)
-        .get();
+        .collection(nestedCollection);
+
+    return getDocuments(collectionRef);
 };
 
 /**
  * Retrieves a document by its ID from a specified Firestore collection.
- * @param {string} collectionName - The name of the collection.
+ * Accepts either a collection name or a CollectionReference.
+ * @param {string | FirebaseFirestore.CollectionReference} collectionName - The collection name or reference.
  * @param {string} id - The ID of the document to retrieve.
  * @returns {Promise<FirebaseFirestore.DocumentSnapshot | null>} - The document or null if it doesn't exist.
  */
 export const getDocumentById = async (
-    collectionName: string,
+    collectionName: string | FirebaseFirestore.CollectionReference,
     id: string
 ): Promise<FirebaseFirestore.DocumentSnapshot | null> => {
     try {
-        const doc: FirebaseFirestore.DocumentSnapshot = await db
-            .collection(collectionName)
-            .doc(id)
-            .get();
-        return doc?.exists ? doc : null;
+        const collectionRef = typeof collectionName === "string"
+            ? db.collection(collectionName)
+            : collectionName;
+
+        const doc: FirebaseFirestore.DocumentSnapshot  = await collectionRef.doc(id).get();
+        return doc.exists ? doc : null;
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -126,23 +147,32 @@ export const getDocumentById = async (
     }
 };
 
+/**
+ * Retrieves a document by ID from a nested Firestore collection.
+ * @param {string} parentCollection - The parent collection name.
+ * @param {string} parentId - The parent document ID.
+ * @param {string} nestedCollection - The nested collection name.
+ * @param {string} documentId - The nested document ID.
+ * @returns {Promise<FirebaseFirestore.DocumentSnapshot | null>} The document or null if it doesn't exist.
+ */
 export const getNestedDocumentById = (
     parentCollection: string,
     parentId: string,
     nestedCollection: string,
     documentId: string
-) => {
-    return db
+): Promise<FirebaseFirestore.DocumentSnapshot | null> => {
+    const collectionRef = db
         .collection(parentCollection)
         .doc(parentId)
-        .collection(nestedCollection)
-        .doc(documentId)
-        .get();
+        .collection(nestedCollection);
+
+    return getDocumentById(collectionRef, documentId);
 };
 
 /**
  * Updates an existing document in a specified Firestore collection.
- * @param {string} collectionName - The name of the collection.
+ * Accepts either a collection name or a CollectionReference.
+ * @param {string | FirebaseFirestore.CollectionReference} collectionName - The collection name or reference.
  * @param {string} id - The ID of the document to update.
  * @param {Partial<T>} data - The updated document data.
  * @returns {Promise<void>}
@@ -167,6 +197,15 @@ export const updateDocument = async <T>(
     }
 };
 
+/**
+ * Updates a document in a nested Firestore collection.
+ * @param {string} parentCollection - The parent collection name.
+ * @param {string} parentId - The parent document ID.
+ * @param {string} nestedCollection - The nested collection name.
+ * @param {string} documentId - The ID of the document to update.
+ * @param {Partial<T>} data - The fields to update.
+ * @returns {Promise<void>} Resolves when the document is updated.
+ */
 export const updateNestedDocument = async <T>(
     parentCollection: string,
     parentId: string,
@@ -185,7 +224,8 @@ export const updateNestedDocument = async <T>(
 /**
  * Deletes a document from a specified Firestore collection.
  * Can operate within a transaction if provided, otherwise performs a direct delete.
- * @param {string} collectionName - The name of the collection.
+ * Accepts either a collection name or a CollectionReference.
+ * @param {string | FirebaseFirestore.CollectionReference} collectionName - The collection name or reference.
  * @param {string} id - The ID of the document to delete.
  * @param {FirebaseFirestore.Transaction} [transaction] - Optional Firestore transaction.
  * @returns {Promise<void>}
@@ -217,6 +257,14 @@ export const deleteDocument = async (
     }
 };
 
+/**
+ * Deletes a document from a nested Firestore collection.
+ * @param {string} parentCollection - The parent collection name.
+ * @param {string} parentId - The parent document ID.
+ * @param {string} nestedCollection - The nested collection name.
+ * @param {string} documentId - The ID of the document to delete.
+ * @returns {Promise<void>} Resolves when the document is deleted.
+ */
 export const deleteNestedDocument = (
     parentCollection: string,
     parentId: string,
