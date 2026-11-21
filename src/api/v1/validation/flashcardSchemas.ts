@@ -8,29 +8,34 @@ import Joi, { ObjectSchema } from "joi";
  *     Flashcard:
  *       type: object
  *       required:
+ *         - id
  *         - question
  *         - answer
+ *         - isMastered
+ *         - createdAt
+ *         - updatedAt
  *       properties:
  *         id:
  *           type: string
- *           description: Unique identifier for the flashcard
- *           example: "card_1"
+ *           description: Unique identifier for the flashcard.
+ *           example: "ahBE4jNLYpjlSVGN71O1"
  *         question:
  *           type: string
  *           minLength: 1
  *           maxLength: 500
- *           description: The question on the flashcard
- *           example: "What is the mitochondria?"
+ *           description: The question on the flashcard.
+ *           example: "What is the main function of mitochondria?"
  *         answer:
  *           type: string
  *           minLength: 1
  *           maxLength: 1000
- *           description: The answer on the flashcard
- *           example: "The mitochondria is the powerhouse of the cell."
+ *           description: The answer on the flashcard.
+ *           example: "Known as the powerhouse of the cell, mitochondria produce ATP through cellular respiration."
  *         isMastered:
  *           type: boolean
  *           default: false
- *           description: Whether the user has mastered this flashcard
+ *           description: Whether the user has mastered this flashcard.
+ *           example: true
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -51,7 +56,7 @@ export const flashcardSchemas = {
             })
         }),
         body: Joi.object({
-            question: Joi.string().min(1).max(500).required().messages({
+            question: Joi.string().trim().min(1).max(500).required().messages({
                 "any.required": "Question is required",
                 "string.empty": "Question cannot be empty",
                 "string.min": "Question must be at least 1 character",

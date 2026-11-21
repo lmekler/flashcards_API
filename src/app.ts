@@ -30,7 +30,18 @@ const app: Express = express();
 app.use(helmetConfig());
 
 // Serve the generated API documentation
-app.use("/docs", express.static(path.join(__dirname, "../docs")));
+app.use(
+    "/docs",
+    (_req, res, next) => {
+        res.removeHeader("X-Frame-Options");
+        res.setHeader(
+            "Content-Security-Policy",
+            "frame-ancestors 'self' http://localhost:5173 https://leannmekler.vercel.app/"
+        );
+        next();
+    },
+    express.static(path.join(__dirname, "../docs"))
+);
 
 // Send visitors who open the bare URL to the docs
 app.get("/", (_req, res) => {

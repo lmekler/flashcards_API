@@ -19,11 +19,11 @@ export interface Flashcard
     answer: string;
 
     /** Whether the user has mastered this flashcard */
-    isMastered?: boolean;
+    isMastered: boolean;
 
     /** Timestamp for when the flashcard was created */
-    createdAt?: string;
+    createdAt: string;
 
     /** Timestamp for last time the flashcard was updated */
-    updatedAt?: string;
+    updatedAt: string;
 }
