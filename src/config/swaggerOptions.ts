@@ -58,7 +58,7 @@ period can take up to a minute while the server wakes up.`,
     apis: [
         "./src/api/v1/routes/*.ts",
         "./src/api/v1/routes/**/*.ts",
-        "./src/api/v1/validations/*.ts"
+        "./src/api/v1/docs/schemas/*.ts"
     ], // Path to the API docs and schemas
 };
 

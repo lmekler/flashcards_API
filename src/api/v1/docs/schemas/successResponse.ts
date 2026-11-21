@@ -22,13 +22,6 @@
  *           example: 10
  *         data:
  *           description: The data returned by the API endpoint. May be a single object or an array of objects.
- *           oneOf:
- *             - type: object
- *               additionalProperties: true
- *             - type: array
- *               items:
- *                 type: object
- *                 additionalProperties: true
  *         message:
  *           type: string
  *           description: A human-readable message describing the successful operation.
