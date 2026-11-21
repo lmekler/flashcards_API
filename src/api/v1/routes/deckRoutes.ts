@@ -19,7 +19,7 @@ const deckRouter: Router = express.Router();
  * @openapi
  * /decks:
  *   post:
- *     summary: Create a new deck
+ *     summary: Create a new deck.
  *     tags: [Decks]
  *     requestBody:
  *       required: true
@@ -34,29 +34,38 @@ const deckRouter: Router = express.Router();
  *                 type: string
  *                 minLength: 1
  *                 maxLength: 100
- *                 description: The title of the deck
- *                 example: "Biology 1115"
+ *                 description: The title of the deck.
+ *                 example: "Human Biology Chapter 1"
  *               description:
  *                 type: string
+ *                 minLength: 1
  *                 maxLength: 500
- *                 description: The description of the deck
- *                 example: "This deck contains flashcards for Biology 1115 course."
+ *                 description: Optional description of the deck. If provided, it cannot be empty or contain only whitespace.
+ *                 example: "The fundamentals of human biology, including cell structure, organelles, and their functions."
  *     responses:
  *       '201':
- *         description: Deck created successfully
+ *         description: Deck created successfully.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Deck'
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Deck'
  *       '400':
- *         description: Invalid input
+ *         description: Invalid input.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 deckRouter.post("/", 
     cors(authenticatedCorsOptions),
@@ -71,25 +80,33 @@ deckRouter.post("/",
  * @openapi
  * /decks/{deckId}:
  *   get:
- *     summary: Get a deck by ID
+ *     summary: Get a deck by ID.
  *     tags: [Decks]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck to retrieve.
  *         schema:
  *           type: string
  *     responses:
  *       '200':
- *         description: Deck retrieved successfully
+ *         description: Deck retrieved successfully.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Deck'
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Deck'
  *       '404':
- *         description: Deck not found
+ *         description: Deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 deckRouter.get("/:deckId", 
     cors(publicCorsOptions), 
@@ -104,51 +121,26 @@ deckRouter.get("/:deckId",
  * @openapi
  * /decks:
  *   get:
- *     summary: Get a list of decks with optional filtering
- *     tags: [Decks]
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 50
- *           default: 20
- *       - in: query
- *         name: sortBy
- *         schema:
- *           type: string
- *           enum: [title, createdAt, updatedAt]
- *           default: createdAt
- *       - in: query
- *         name: sortOrder
- *         schema:
- *           type: string
- *           enum: [asc, desc]
- *           default: desc
+ *     summary: Get a list of decks.
+ *     tags: [Decks]a
  *     responses:
  *       '200':
- *         description: Decks retrieved successfully
+ *         description: Decks retrieved successfully.
  *         content:
  *           application/json:
- *             type: object
- *             properties:
- *               decks:
- *                 type: array
- *                 items:
- *                   $ref: '#/components/schemas/Deck'
- *               total:
- *                 type: integer
- *               page:
- *                 type: integer
- *               totalPages:
- *                 type: integer
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       description: A list of decks.
+ *                       items:
+ *                         $ref: '#/components/schemas/Deck'
+ *                     count:
+ *                       type: integer
+ *                       description: The number of decks returned.
  */
 deckRouter.get("/", 
     cors(publicCorsOptions), 
@@ -163,12 +155,13 @@ deckRouter.get("/",
  * @openapi
  * /decks/{deckId}:
  *   put:
- *     summary: Update a deck by ID
+ *     summary: Update a deck by ID.
  *     tags: [Decks]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck to update.
  *         schema:
  *           type: string
  *     requestBody:
@@ -180,35 +173,46 @@ deckRouter.get("/",
  *             properties:
  *               description:
  *                 type: string
+ *                 minLength: 1
  *                 maxLength: 500
- *                 description: The description of the deck
- *                 example: "This deck contains flashcards for Biology 1115 course."
+ *                 description: The updated description of the deck.
+ *                 example: "An introduction to the structure, functions, and essential processes of the human body."
  *     responses:
  *       '200':
- *         description: Deck updated successfully
+ *         description: Deck updated successfully.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Deck'
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Deck'
  *       '400':
- *         description: Invalid input
+ *         description: Invalid input.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Deck not found
+ *         description: Deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 deckRouter.put("/:deckId",
     cors(authenticatedCorsOptions), 
@@ -223,39 +227,47 @@ deckRouter.put("/:deckId",
  * @openapi
  * /decks/{deckId}:
  *   delete:
- *     summary: Delete a deck by ID
+ *     summary: Delete a deck by ID.
  *     tags: [Decks]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck to delete.
  *         schema:
  *           type: string
  *     responses:
  *       '200':
- *         description: Deck deleted successfully
+ *         description: Deck deleted successfully.
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       nullable: true
+ *                       description: No data is returned after deletion.
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Deck not found
+ *         description: Deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 deckRouter.delete("/:deckId", 
     cors(authenticatedCorsOptions),
