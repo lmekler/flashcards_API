@@ -56,13 +56,13 @@ export const deckSchemas = {
             visibility: Joi.boolean().optional().messages({
                 "boolean.base": "Visibility must be a boolean value"
             }),
-            title: Joi.string().min(1).max(100).required().messages({
+            title: Joi.string().trim().min(1).max(100).required().messages({
                 "any.required": "Title is required",
                 "string.empty": "Title cannot be empty",
                 "string.min": "Title must be at least 1 character",
                 "string.max": "Title cannot exceed 100 characters"
             }),
-            description: Joi.string().max(500).optional().messages({
+            description: Joi.string().trim().max(500).optional().messages({
                 "string.max": "Description cannot exceed 500 characters"
             })
         })
@@ -88,7 +88,7 @@ export const deckSchemas = {
             visibility: Joi.boolean().optional().messages({
                 "boolean.base": "Visibility must be a boolean value"
             }),
-            description: Joi.string().max(500).allow("").optional().messages({
+            description: Joi.string().trim().max(500).allow("").optional().messages({
                 "string.max": "Description cannot exceed 500 characters"
             })
         }).min(1)

@@ -51,7 +51,7 @@ export const flashcardSchemas = {
             })
         }),
         body: Joi.object({
-            question: Joi.string().min(1).max(500).required().messages({
+            question: Joi.string().trim().min(1).max(500).required().messages({
                 "any.required": "Question is required",
                 "string.empty": "Question cannot be empty",
                 "string.min": "Question must be at least 1 character",
