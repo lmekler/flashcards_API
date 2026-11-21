@@ -61,6 +61,20 @@ export class ServiceError extends AppError {
 }
 
 /**
+ * Class representing a validation error.
+ * Used when request data fails validation requirements.
+ */
+export class ValidationError extends AppError {
+    constructor(
+        message: string,
+        code: string = "VALIDATION_ERROR",
+        statusCode: number = HTTP_STATUS.UNPROCESSABLE_ENTITY
+    ) {
+        super(message, code, statusCode);
+    }
+}
+
+/**
  * Class representing an authentication error.
  * Extends AppError to include token verification and user identity errors.
  * Used for invalid tokens, expired tokens, and missing authentication.

@@ -4,7 +4,7 @@ import { ObjectSchema } from "joi";
 
 // Internal module imports
 import { MiddlewareFunction } from "../types/express";
-import { HTTP_STATUS } from "../../../constants/httpConstants";
+import { ValidationError } from "../errors/errors";
 
 interface RequestSchemas {
     body?: ObjectSchema;
@@ -103,18 +103,16 @@ export const validateRequest = (
                 );
             }
 
-            // If there are any validation errors, return them
             if (errors.length > 0) {
-                return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                    error: `Validation error: ${errors.join(", ")}`,
-                });
+                throw new ValidationError(
+                    `Validation error: ${errors.join(", ")}`,
+                    "REQUEST_VALIDATION_FAILED"
+                );
             }
 
             next();
         } catch (error: unknown) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({
-                error: (error as Error).message,
-            });
+            next(error);
         }
     };
 };
