@@ -30,7 +30,6 @@ const app: Express = express();
 app.use(helmetConfig());
 
 // Serve the generated API documentation
-app.use("/docs", express.static(path.join(__dirname, "../docs")));
 app.use(
     "/docs",
     (_req, res, next) => {
