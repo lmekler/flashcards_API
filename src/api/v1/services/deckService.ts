@@ -44,7 +44,7 @@ export const findDeckById = async (deckId: string): Promise<Deck> =>
     {
         throw new AppError(
             `Deck with ID ${deckId} not found`,
-            'DECK_NOT_FOUND', 
+            'NOT_FOUND', 
             HTTP_STATUS.NOT_FOUND
         );
     }

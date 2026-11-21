@@ -54,18 +54,36 @@ const deckRouter: Router = express.Router();
  *                   properties:
  *                     data:
  *                       $ref: '#/components/schemas/Deck'
- *       '400':
- *         description: Invalid input.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               status: success
+ *               data:
+ *                 id: "bwCOdVm9LuiJycWyJNar"
+ *                 userId: "dxddMFNEukf56t6rSxvtdbSUWf23"
+ *                 visibility: true
+ *                 title: "Human Biology Chapter 1"
+ *                 description: "The fundamentals of human biology, including cell structure, organelles, and their functions."
+ *                 cardCount: 0
+ *                 createdAt: "2026-04-11T15:00:00.000Z"
+ *                 updatedAt: "2026-04-11T15:00:00.000Z"
+ *               message: "Deck created successfully."
  *       '401':
- *         description: Unauthorized.
+ *         description: Unauthorized. Authentication is missing or invalid.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
+ *       '422':
+ *         description: Request validation failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Validation:
+ *                 $ref: '#/components/examples/Validation'
  */
 deckRouter.post("/", 
     cors(authenticatedCorsOptions),
@@ -101,12 +119,27 @@ deckRouter.post("/",
  *                   properties:
  *                     data:
  *                       $ref: '#/components/schemas/Deck'
+ *             example:
+ *               status: success
+ *               data:
+ *                 id: "bwCOdVm9LuiJycWyJNar"
+ *                 userId: "dxddMFNEukf56t6rSxvtdbSUWf23"
+ *                 visibility: true
+ *                 title: "Human Biology Chapter 1"
+ *                 description: "An introduction to the structure, functions, and essential processes of the human body."
+ *                 cardCount: 2
+ *                 createdAt: "2026-04-11T15:00:00.000Z"
+ *                 updatedAt: "2026-11-21T15:00:00.000Z"
+ *               message: "Deck retrieved successfully."
  *       '404':
  *         description: Deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
  */
 deckRouter.get("/:deckId", 
     cors(publicCorsOptions), 
@@ -141,6 +174,19 @@ deckRouter.get("/:deckId",
  *                     count:
  *                       type: integer
  *                       description: The number of decks returned.
+ *             example:
+ *               status: success
+ *               count: 1
+ *               data:
+ *                 - id: "bwCOdVm9LuiJycWyJNar"
+ *                   userId: "dxddMFNEukf56t6rSxvtdbSUWf23"
+ *                   visibility: true
+ *                   title: "Human Biology Chapter 1"
+ *                   description: "An introduction to the structure, functions, and essential processes of the human body."
+ *                   cardCount: 2
+ *                   createdAt: "2026-04-11T15:00:00.000Z"
+ *                   updatedAt: "2026-11-21T15:00:00.000Z"
+ *               message: "Decks retrieved successfully."
  */
 deckRouter.get("/", 
     cors(publicCorsOptions), 
@@ -189,30 +235,54 @@ deckRouter.get("/",
  *                   properties:
  *                     data:
  *                       $ref: '#/components/schemas/Deck'
- *       '400':
- *         description: Invalid input.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               status: success
+ *               data:
+ *                 id: "bwCOdVm9LuiJycWyJNar"
+ *                 userId: "dxddMFNEukf56t6rSxvtdbSUWf23"
+ *                 visibility: true
+ *                 title: "Human Biology Chapter 1"
+ *                 description: "An introduction to the structure, functions, and essential processes of the human body."
+ *                 cardCount: 2
+ *                 createdAt: "2026-04-11T15:00:00.000Z"
+ *                 updatedAt: "2026-11-21T15:00:00.000Z"
+ *               message: "Deck updated successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
+ *       '422':
+ *         description: Request validation failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Validation:
+ *                 $ref: '#/components/examples/Validation'
  */
 deckRouter.put("/:deckId",
     cors(authenticatedCorsOptions), 
@@ -250,24 +320,37 @@ deckRouter.put("/:deckId",
  *                       type: object
  *                       nullable: true
  *                       description: No data is returned after deletion.
+ *             example:
+ *               status: success
+ *               data: null
+ *               message: "Deck deleted successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
  */
 deckRouter.delete("/:deckId", 
     cors(authenticatedCorsOptions),

@@ -77,7 +77,7 @@ const findFlashcardById = async (deckId: string, cardId: string): Promise<Flashc
     {
         throw new AppError(
             `Flashcard with ID ${cardId} not found`,
-            'FLASHCARD_NOT_FOUND', 
+            'NOT_FOUND', 
             HTTP_STATUS.NOT_FOUND
         );
     }

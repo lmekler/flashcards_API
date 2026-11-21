@@ -65,30 +65,53 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *                   properties:
  *                     data:
  *                       $ref: '#/components/schemas/Flashcard'
- *       '400':
- *         description: Invalid input.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               status: success
+ *               data:
+ *                 id: "flCrd9xK2mPq7vRt"
+ *                 deckId: "bwCOdVm9LuiJycWyJNar"
+ *                 question: "What is the main function of mitochondria?"
+ *                 answer: "Mitochondria produce ATP through cellular respiration, providing energy for the cell."
+ *                 isMastered: false
+ *                 createdAt: "2026-04-11T16:00:00.000Z"
+ *                 updatedAt: "2026-04-11T16:00:00.000Z"
+ *               message: "Flashcard created successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
+ *       '422':
+ *         description: Request validation failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Validation:
+ *                 $ref: '#/components/examples/Validation'
  */
 flashcardRouter.post("/",
     cors(authenticatedCorsOptions),
@@ -130,24 +153,44 @@ flashcardRouter.post("/",
  *                   properties:
  *                     data:
  *                       $ref: '#/components/schemas/Flashcard'
+ *             example:
+ *               status: success
+ *               data:
+ *                 id: "flCrd3nL8wXq5jKs"
+ *                 deckId: "bwCOdVm9LuiJycWyJNar"
+ *                 question: "What role do ribosomes play in a cell?"
+ *                 answer: "They synthesize proteins by translating mRNA."
+ *                 isMastered: true
+ *                 createdAt: "2026-04-11T16:05:00.000Z"
+ *                 updatedAt: "2026-04-11T16:30:00.000Z"
+ *               message: "Flashcard retrieved successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Flashcard or deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
  */
 flashcardRouter.get("/:cardId",
     cors(publicCorsOptions),
@@ -189,24 +232,52 @@ flashcardRouter.get("/:cardId",
  *                       description: A list of flashcards in the deck.
  *                       items:
  *                         $ref: '#/components/schemas/Flashcard'
+ *             example:
+ *               status: success
+ *               count: 2
+ *               data:
+ *                 - id: "flCrd9xK2mPq7vRt"
+ *                   deckId: "bwCOdVm9LuiJycWyJNar"
+ *                   question: "What is the main function of mitochondria?"
+ *                   answer: "Mitochondria produce ATP through cellular respiration, providing energy for the cell."
+ *                   isMastered: true
+ *                   createdAt: "2026-04-11T16:00:00.000Z"
+ *                   updatedAt: "2026-11-21T15:00:00.000Z"
+ *                 - id: "flCrd3nL8wXq5jKs"
+ *                   deckId: "bwCOdVm9LuiJycWyJNar"
+ *                   question: "What role do ribosomes play in a cell?"
+ *                   answer: "They synthesize proteins by translating mRNA."
+ *                   isMastered: true
+ *                   createdAt: "2026-04-11T16:05:00.000Z"
+ *                   updatedAt: "2026-04-11T16:30:00.000Z"
+ *               message: "Flashcards retrieved successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
  */
 flashcardRouter.get("/",
     cors(publicCorsOptions),
@@ -259,30 +330,53 @@ flashcardRouter.get("/",
  *                   properties:
  *                     data:
  *                       $ref: '#/components/schemas/Flashcard'
- *       '400':
- *         description: Invalid input.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               status: success
+ *               data:
+ *                 id: "flCrd9xK2mPq7vRt"
+ *                 deckId: "bwCOdVm9LuiJycWyJNar"
+ *                 question: "What is the main function of mitochondria?"
+ *                 answer: "Mitochondria produce ATP through cellular respiration, providing energy for the cell."
+ *                 isMastered: true
+ *                 createdAt: "2026-04-11T16:00:00.000Z"
+ *                 updatedAt: "2026-11-21T15:00:00.000Z"
+ *               message: "Flashcard updated successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Flashcard or deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
+ *       '422':
+ *         description: Request validation failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Validation:
+ *                 $ref: '#/components/examples/Validation'
  */
 flashcardRouter.put("/:cardId",
     cors(authenticatedCorsOptions),
@@ -326,24 +420,37 @@ flashcardRouter.put("/:cardId",
  *                       type: object
  *                       nullable: true
  *                       description: No data is returned after deletion.
+ *             example:
+ *               status: success
+ *               data: null
+ *               message: "Flashcard deleted successfully."
  *       '401':
  *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Unauthorized:
+ *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
  *         description: Forbidden.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               Forbidden:
+ *                 $ref: '#/components/examples/Forbidden'
  *       '404':
  *         description: Flashcard or deck not found.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFound:
+ *                 $ref: '#/components/examples/NotFound'
  */
 flashcardRouter.delete("/:cardId",
     cors(authenticatedCorsOptions),

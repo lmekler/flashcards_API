@@ -139,7 +139,7 @@
               "code": {
                 "type": "string",
                 "description": "A machine-readable error code that identifies the type of failure.",
-                "example": "TOKEN_NOT_FOUND"
+                "example": "AUTHENTICATION_ERROR"
               }
             }
           },
@@ -233,6 +233,52 @@
           }
         }
       }
+    },
+    "examples": {
+      "Unauthorized": {
+        "summary": "Authentication required.",
+        "value": {
+          "success": false,
+          "error": {
+            "message": "Unauthorized: No token provided or token is invalid.",
+            "code": "AUTHENTICATION_ERROR"
+          },
+          "timestamp": "2026-11-20T20:00:00.000Z"
+        }
+      },
+      "Forbidden": {
+        "summary": "Insufficient permissions.",
+        "value": {
+          "success": false,
+          "error": {
+            "message": "You do not have permission to perform this action.",
+            "code": "AUTHORIZATION_ERROR"
+          },
+          "timestamp": "2026-11-20T20:00:00.000Z"
+        }
+      },
+      "NotFound": {
+        "summary": "Resource not found.",
+        "value": {
+          "success": false,
+          "error": {
+            "message": "The requested resource could not be found.",
+            "code": "NOT_FOUND"
+          },
+          "timestamp": "2026-11-20T20:00:00.000Z"
+        }
+      },
+      "Validation": {
+        "summary": "Request validation failed.",
+        "value": {
+          "success": false,
+          "error": {
+            "message": "Validation error: Body: \"title\" is required.",
+            "code": "REQUEST_VALIDATION_FAILED"
+          },
+          "timestamp": "2026-11-20T20:00:00.000Z"
+        }
+      }
     }
   },
   "security": [
@@ -295,26 +341,50 @@
                       }
                     }
                   ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "bwCOdVm9LuiJycWyJNar",
+                    "userId": "dxddMFNEukf56t6rSxvtdbSUWf23",
+                    "visibility": true,
+                    "title": "Human Biology Chapter 1",
+                    "description": "The fundamentals of human biology, including cell structure, organelles, and their functions.",
+                    "cardCount": 0,
+                    "createdAt": "2026-04-11T15:00:00.000Z",
+                    "updatedAt": "2026-04-11T15:00:00.000Z"
+                  },
+                  "message": "Deck created successfully."
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized.",
+            "description": "Unauthorized. Authentication is missing or invalid.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Validation": {
+                    "$ref": "#/components/examples/Validation"
+                  }
                 }
               }
             }
@@ -353,6 +423,23 @@
                       }
                     }
                   ]
+                },
+                "example": {
+                  "status": "success",
+                  "count": 1,
+                  "data": [
+                    {
+                      "id": "bwCOdVm9LuiJycWyJNar",
+                      "userId": "dxddMFNEukf56t6rSxvtdbSUWf23",
+                      "visibility": true,
+                      "title": "Human Biology Chapter 1",
+                      "description": "An introduction to the structure, functions, and essential processes of the human body.",
+                      "cardCount": 2,
+                      "createdAt": "2026-04-11T15:00:00.000Z",
+                      "updatedAt": "2026-11-21T15:00:00.000Z"
+                    }
+                  ],
+                  "message": "Decks retrieved successfully."
                 }
               }
             }
@@ -396,6 +483,20 @@
                       }
                     }
                   ]
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "bwCOdVm9LuiJycWyJNar",
+                    "userId": "dxddMFNEukf56t6rSxvtdbSUWf23",
+                    "visibility": true,
+                    "title": "Human Biology Chapter 1",
+                    "description": "An introduction to the structure, functions, and essential processes of the human body.",
+                    "cardCount": 2,
+                    "createdAt": "2026-04-11T15:00:00.000Z",
+                    "updatedAt": "2026-11-21T15:00:00.000Z"
+                  },
+                  "message": "Deck retrieved successfully."
                 }
               }
             }
@@ -406,6 +507,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
                 }
               }
             }
@@ -466,16 +572,20 @@
                       }
                     }
                   ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "bwCOdVm9LuiJycWyJNar",
+                    "userId": "dxddMFNEukf56t6rSxvtdbSUWf23",
+                    "visibility": true,
+                    "title": "Human Biology Chapter 1",
+                    "description": "An introduction to the structure, functions, and essential processes of the human body.",
+                    "cardCount": 2,
+                    "createdAt": "2026-04-11T15:00:00.000Z",
+                    "updatedAt": "2026-11-21T15:00:00.000Z"
+                  },
+                  "message": "Deck updated successfully."
                 }
               }
             }
@@ -486,6 +596,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -496,6 +611,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -506,6 +626,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Validation": {
+                    "$ref": "#/components/examples/Validation"
+                  }
                 }
               }
             }
@@ -549,6 +689,11 @@
                       }
                     }
                   ]
+                },
+                "example": {
+                  "status": "success",
+                  "data": null,
+                  "message": "Deck deleted successfully."
                 }
               }
             }
@@ -559,6 +704,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -569,6 +719,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -579,6 +734,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
                 }
               }
             }
@@ -657,16 +817,19 @@
                       }
                     }
                   ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "flCrd9xK2mPq7vRt",
+                    "deckId": "bwCOdVm9LuiJycWyJNar",
+                    "question": "What is the main function of mitochondria?",
+                    "answer": "Mitochondria produce ATP through cellular respiration, providing energy for the cell.",
+                    "isMastered": false,
+                    "createdAt": "2026-04-11T16:00:00.000Z",
+                    "updatedAt": "2026-04-11T16:00:00.000Z"
+                  },
+                  "message": "Flashcard created successfully."
                 }
               }
             }
@@ -677,6 +840,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -687,6 +855,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -697,6 +870,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Validation": {
+                    "$ref": "#/components/examples/Validation"
+                  }
                 }
               }
             }
@@ -746,6 +939,31 @@
                       }
                     }
                   ]
+                },
+                "example": {
+                  "status": "success",
+                  "count": 2,
+                  "data": [
+                    {
+                      "id": "flCrd9xK2mPq7vRt",
+                      "deckId": "bwCOdVm9LuiJycWyJNar",
+                      "question": "What is the main function of mitochondria?",
+                      "answer": "Mitochondria produce ATP through cellular respiration, providing energy for the cell.",
+                      "isMastered": true,
+                      "createdAt": "2026-04-11T16:00:00.000Z",
+                      "updatedAt": "2026-11-21T15:00:00.000Z"
+                    },
+                    {
+                      "id": "flCrd3nL8wXq5jKs",
+                      "deckId": "bwCOdVm9LuiJycWyJNar",
+                      "question": "What role do ribosomes play in a cell?",
+                      "answer": "They synthesize proteins by translating mRNA.",
+                      "isMastered": true,
+                      "createdAt": "2026-04-11T16:05:00.000Z",
+                      "updatedAt": "2026-04-11T16:30:00.000Z"
+                    }
+                  ],
+                  "message": "Flashcards retrieved successfully."
                 }
               }
             }
@@ -756,6 +974,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -766,6 +989,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -776,6 +1004,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
                 }
               }
             }
@@ -828,6 +1061,19 @@
                       }
                     }
                   ]
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "flCrd3nL8wXq5jKs",
+                    "deckId": "bwCOdVm9LuiJycWyJNar",
+                    "question": "What role do ribosomes play in a cell?",
+                    "answer": "They synthesize proteins by translating mRNA.",
+                    "isMastered": true,
+                    "createdAt": "2026-04-11T16:05:00.000Z",
+                    "updatedAt": "2026-04-11T16:30:00.000Z"
+                  },
+                  "message": "Flashcard retrieved successfully."
                 }
               }
             }
@@ -838,6 +1084,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -848,6 +1099,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -858,6 +1114,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
                 }
               }
             }
@@ -925,16 +1186,19 @@
                       }
                     }
                   ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "flCrd9xK2mPq7vRt",
+                    "deckId": "bwCOdVm9LuiJycWyJNar",
+                    "question": "What is the main function of mitochondria?",
+                    "answer": "Mitochondria produce ATP through cellular respiration, providing energy for the cell.",
+                    "isMastered": true,
+                    "createdAt": "2026-04-11T16:00:00.000Z",
+                    "updatedAt": "2026-11-21T15:00:00.000Z"
+                  },
+                  "message": "Flashcard updated successfully."
                 }
               }
             }
@@ -945,6 +1209,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -955,6 +1224,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -965,6 +1239,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Validation": {
+                    "$ref": "#/components/examples/Validation"
+                  }
                 }
               }
             }
@@ -1017,6 +1311,11 @@
                       }
                     }
                   ]
+                },
+                "example": {
+                  "status": "success",
+                  "data": null,
+                  "message": "Flashcard deleted successfully."
                 }
               }
             }
@@ -1027,6 +1326,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
                 }
               }
             }
@@ -1037,6 +1341,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Forbidden": {
+                    "$ref": "#/components/examples/Forbidden"
+                  }
                 }
               }
             }
@@ -1047,6 +1356,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "NotFound": {
+                    "$ref": "#/components/examples/NotFound"
+                  }
                 }
               }
             }
