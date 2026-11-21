@@ -18,12 +18,13 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  * @openapi
  * /decks/{deckId}/flashcards:
  *   post:
- *     summary: Create a flashcard in a deck
+ *     summary: Create a flashcard in a deck.
  *     tags: [Flashcards]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck in which to create the flashcard.
  *         schema:
  *           type: string
  *     requestBody:
@@ -32,7 +33,7 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *         application/json:
  *           schema:
  *             type: object
- *             required: 
+ *             required:
  *               - question
  *               - answer
  *             properties:
@@ -40,44 +41,54 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *                 type: string
  *                 minLength: 1
  *                 maxLength: 500
- *                 description: The question on the flashcard
- *                 example: "What is the mitochrondia?"
+ *                 description: The question displayed on the flashcard.
+ *                 example: "What is the main function of mitochondria?"
  *               answer:
  *                 type: string
  *                 minLength: 1
  *                 maxLength: 1000
- *                 description: The answer on the flashcard
- *                 example: "The mitochrondia is the powerhouse of the cell."
+ *                 description: The answer displayed on the flashcard.
+ *                 example: "Known as the powerhouse of the cell, mitochondria produce ATP through cellular respiration."
  *               isMastered:
  *                 type: boolean
  *                 default: false
- *                 description: Whether the user has mastered this flashcard
+ *                 description: Indicates whether the flashcard has been mastered.
  *     responses:
  *       '201':
- *         description: Flashcard created successfully
+ *         description: Flashcard created successfully.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Flashcard'
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Flashcard'
  *       '400':
- *         description: Invalid input
+ *         description: Invalid input.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Deck not found
+ *         description: Deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 flashcardRouter.post("/",
     cors(authenticatedCorsOptions),
@@ -92,40 +103,51 @@ flashcardRouter.post("/",
  * @openapi
  * /decks/{deckId}/flashcards/{cardId}:
  *   get:
- *     summary: Get a flashcard by ID
+ *     summary: Get a flashcard by ID.
  *     tags: [Flashcards]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck containing the flashcard.
  *         schema:
  *           type: string
  *       - in: path
  *         name: cardId
  *         required: true
+ *         description: The ID of the flashcard to retrieve.
  *         schema:
  *           type: string
  *     responses:
  *       '200':
- *         description: Flashcard retrieved successfully
+ *         description: Flashcard retrieved successfully.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Flashcard'
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Flashcard'
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Not found
+ *         description: Flashcard or deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 flashcardRouter.get("/:cardId",
     cors(publicCorsOptions),
@@ -146,53 +168,45 @@ flashcardRouter.get("/:cardId",
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck whose flashcards will be retrieved.
  *         schema:
  *           type: string
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 50
- *           default: 20
  *     responses:
  *       '200':
- *         description: Flashcards retrieved successfully
+ *         description: Flashcards retrieved successfully.
  *         content:
  *           application/json:
- *             type: object
- *             properties:
- *               flashcards:
- *                 type: array
- *                 items:
- *                   $ref: '#/components/schemas/Flashcard'
- *               total:
- *                 type: integer
- *               page:
- *                 type: integer
- *               totalPages:
- *                 type: integer
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     count:
+ *                       type: integer
+ *                       description: The number of flashcards returned.
+ *                     data:
+ *                       type: array
+ *                       description: A list of flashcards in the deck.
+ *                       items:
+ *                         $ref: '#/components/schemas/Flashcard'
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Deck not found
+ *         description: Deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 flashcardRouter.get("/",
     cors(publicCorsOptions),
@@ -207,17 +221,19 @@ flashcardRouter.get("/",
  * @openapi
  * /decks/{deckId}/flashcards/{cardId}:
  *   put:
- *     summary: Update a flashcard
+ *     summary: Update a flashcard.
  *     tags: [Flashcards]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck containing the flashcard.
  *         schema:
  *           type: string
  *       - in: path
  *         name: cardId
  *         required: true
+ *         description: The ID of the flashcard to update.
  *         schema:
  *           type: string
  *     requestBody:
@@ -229,34 +245,44 @@ flashcardRouter.get("/",
  *             properties:
  *               isMastered:
  *                 type: boolean
- *                 default: false
- *                 description: Whether the user has mastered this flashcard
+ *                 description: Indicates whether the flashcard has been mastered.
+ *                 example: true
  *     responses:
  *       '200':
- *         description: Flashcard updated successfully
+ *         description: Flashcard updated successfully.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Flashcard'
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Flashcard'
  *       '400':
- *         description: Invalid input
+ *         description: Invalid input.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Not found
+ *         description: Flashcard or deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 flashcardRouter.put("/:cardId",
     cors(authenticatedCorsOptions),
@@ -271,43 +297,53 @@ flashcardRouter.put("/:cardId",
  * @openapi
  * /decks/{deckId}/flashcards/{cardId}:
  *   delete:
- *     summary: Delete a flashcard
+ *     summary: Delete a flashcard.
  *     tags: [Flashcards]
  *     parameters:
  *       - in: path
  *         name: deckId
  *         required: true
+ *         description: The ID of the deck containing the flashcard.
  *         schema:
  *           type: string
  *       - in: path
  *         name: cardId
  *         required: true
+ *         description: The ID of the flashcard to delete.
  *         schema:
  *           type: string
  *     responses:
  *       '200':
- *         description: Flashcard deleted successfully
+ *         description: Flashcard deleted successfully.
  *         content:
  *           application/json:
- *             type: object
- *             properties:
- *               message:
- *                 type: string
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       nullable: true
+ *                       description: No data is returned after deletion.
  *       '401':
- *         description: Unauthorized
+ *         description: Unauthorized.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '403':
- *         description: Forbidden
+ *         description: Forbidden.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       '404':
- *         description: Not found
+ *         description: Flashcard or deck not found.
  *         content:
  *           application/json:
- *             $ref: '#/components/schemas/Error'
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 flashcardRouter.delete("/:cardId",
     cors(authenticatedCorsOptions),

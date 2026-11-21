@@ -122,7 +122,7 @@ deckRouter.get("/:deckId",
  * /decks:
  *   get:
  *     summary: Get a list of decks.
- *     tags: [Decks]a
+ *     tags: [Decks]
  *     responses:
  *       '200':
  *         description: Decks retrieved successfully.
