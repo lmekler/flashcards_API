@@ -137,9 +137,12 @@ deckRouter.post("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                 code: "NOT_FOUND"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 deckRouter.get("/:deckId", 
     cors(publicCorsOptions), 
@@ -245,7 +248,7 @@ deckRouter.get("/",
  *                 description: "An introduction to the structure, functions, and essential processes of the human body."
  *                 cardCount: 2
  *                 createdAt: "2026-04-11T15:00:00.000Z"
- *                 updatedAt: "2026-11-21T15:00:00.000Z"
+ *                 updatedAt: "2026-11-21T15:05:00.000Z"
  *               message: "Deck updated successfully."
  *       '401':
  *         description: Unauthorized.
@@ -271,9 +274,12 @@ deckRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                 code: "NOT_FOUND"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '422':
  *         description: Request validation failed.
  *         content:
@@ -348,9 +354,12 @@ deckRouter.put("/:deckId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                 code: "NOT_FOUND"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 deckRouter.delete("/:deckId", 
     cors(authenticatedCorsOptions),

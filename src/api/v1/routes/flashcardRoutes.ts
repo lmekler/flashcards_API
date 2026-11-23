@@ -100,9 +100,12 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                 code: "NOT_FOUND"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '422':
  *         description: Request validation failed.
  *         content:
@@ -189,8 +192,22 @@ flashcardRouter.post("/",
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *               DeckNotFound:
+ *                 summary: Deck not found.
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                     code: "NOT_FOUND"
+ *                   timestamp: "2026-11-21T15:30:00.000Z"
+ *               FlashcardNotFound:
+ *                 summary: Flashcard not found.
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     message: "Flashcard with ID 6mipKSt9tabktmrpw66f not found"
+ *                     code: "NOT_FOUND"
+ *                   timestamp: "2026-11-21T15:30:00.000Z"
  */
 flashcardRouter.get("/:cardId",
     cors(publicCorsOptions),
@@ -275,9 +292,12 @@ flashcardRouter.get("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                 code: "NOT_FOUND"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 flashcardRouter.get("/",
     cors(publicCorsOptions),
@@ -366,8 +386,22 @@ flashcardRouter.get("/",
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *               DeckNotFound:
+ *                 summary: Deck not found.
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                     code: "NOT_FOUND"
+ *                   timestamp: "2026-11-21T15:30:00.000Z"
+ *               FlashcardNotFound:
+ *                 summary: Flashcard not found.
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     message: "Flashcard with ID 6mipKSt9tabktmrpw66f not found"
+ *                     code: "NOT_FOUND"
+ *                   timestamp: "2026-11-21T15:30:00.000Z"
  *       '422':
  *         description: Request validation failed.
  *         content:
@@ -449,8 +483,22 @@ flashcardRouter.put("/:cardId",
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               NotFound:
- *                 $ref: '#/components/examples/NotFound'
+ *               DeckNotFound:
+ *                 summary: Deck not found.
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     message: "Deck with ID kfG6mSJUSRJyDKHyZtre not found"
+ *                     code: "NOT_FOUND"
+ *                   timestamp: "2026-11-21T15:30:00.000Z"
+ *               FlashcardNotFound:
+ *                 summary: Flashcard not found.
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     message: "Flashcard with ID 6mipKSt9tabktmrpw66f not found"
+ *                     code: "NOT_FOUND"
+ *                   timestamp: "2026-11-21T15:30:00.000Z"
  */
 flashcardRouter.delete("/:cardId",
     cors(authenticatedCorsOptions),
