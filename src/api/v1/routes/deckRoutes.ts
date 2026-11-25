@@ -73,8 +73,10 @@ const deckRouter: Router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '422':
  *         description: Request validation failed.
  *         content:
@@ -272,8 +274,10 @@ deckRouter.get("/",
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:
@@ -358,8 +362,10 @@ deckRouter.put("/:deckId",
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:

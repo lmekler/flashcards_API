@@ -82,9 +82,11 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *             examples:
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:
@@ -179,9 +181,11 @@ flashcardRouter.post("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *             examples:
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:
@@ -283,9 +287,11 @@ flashcardRouter.get("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *             examples:
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:
@@ -379,9 +385,11 @@ flashcardRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *             examples:
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:
@@ -482,9 +490,11 @@ flashcardRouter.put("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               Unauthorized:
- *                 $ref: '#/components/examples/Unauthorized'
+ *             examples:
+ *               MissingToken:
+ *                 $ref: '#/components/examples/MissingToken'
+ *               InvalidToken:
+ *                 $ref: '#/components/examples/InvalidToken'
  *       '403':
  *         description: Forbidden.
  *         content:
