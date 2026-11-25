@@ -81,9 +81,12 @@ const deckRouter: Router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Validation:
- *                 $ref: '#/components/examples/Validation'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Validation error: Body: Title is required"
+ *                 code: "REQUEST_VALIDATION_FAILED"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 deckRouter.post("/", 
     cors(authenticatedCorsOptions),
@@ -301,9 +304,12 @@ deckRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Validation:
- *                 $ref: '#/components/examples/Validation'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Validation error: Body: \"value\" must have at least 1 key"
+ *                 code: "REQUEST_VALIDATION_FAILED"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 deckRouter.put("/:deckId",
     cors(authenticatedCorsOptions), 

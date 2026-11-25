@@ -68,10 +68,12 @@ export const flashcardSchemas = {
             })
         }),
         body: Joi.object({
-            isMastered: Joi.boolean().optional().default(false).messages({
+            isMastered: Joi.boolean().messages({
                 "boolean.base": "isMastered must be a boolean value"
             }),
-        }).min(1)
+        }).min(1).messages({
+            "object.min": "At least one field must be provided"
+        })
     },
 
     delete: {

@@ -82,7 +82,7 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
+ *             example:
  *               Unauthorized:
  *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
@@ -115,9 +115,12 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Validation:
- *                 $ref: '#/components/examples/Validation'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Validation error: Body: Question is required, Body: Answer is required"
+ *                 code: "REQUEST_VALIDATION_FAILED"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 flashcardRouter.post("/",
     cors(authenticatedCorsOptions),
@@ -176,7 +179,7 @@ flashcardRouter.post("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
+ *             example:
  *               Unauthorized:
  *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
@@ -280,7 +283,7 @@ flashcardRouter.get("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
+ *             example:
  *               Unauthorized:
  *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
@@ -376,7 +379,7 @@ flashcardRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
+ *             example:
  *               Unauthorized:
  *                 $ref: '#/components/examples/Unauthorized'
  *       '403':
@@ -420,9 +423,12 @@ flashcardRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Validation:
- *                 $ref: '#/components/examples/Validation'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "Validation error: Body: At least one field must be provided"
+ *                 code: "REQUEST_VALIDATION_FAILED"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  */
 flashcardRouter.put("/:cardId",
     cors(authenticatedCorsOptions),
@@ -476,7 +482,7 @@ flashcardRouter.put("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
+ *             example:
  *               Unauthorized:
  *                 $ref: '#/components/examples/Unauthorized'
  *       '403':

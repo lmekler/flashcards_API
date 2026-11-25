@@ -36,39 +36,21 @@
  *           example: "2026-11-20T20:00:00.000Z"
  *
  *   examples:
- *     Unauthorized:
- *       summary: Authentication required.
+ *     MissingToken:
+ *       summary: No token was sent.
  *       value:
  *         success: false
  *         error:
- *           message: "Unauthorized: No token provided or token is invalid."
- *           code: "AUTHENTICATION_ERROR"
- *         timestamp: "2026-11-20T20:00:00.000Z"
- *
- *     Forbidden:
- *       summary: Insufficient permissions.
+ *           message: "Unauthorized: No token provided"
+ *           code: "TOKEN_NOT_FOUND"
+ *         timestamp: "2026-11-21T15:30:00.000Z"
+ * 
+ *     InvalidToken:
+ *       summary: The token is malformed, expired, or otherwise invalid.
  *       value:
  *         success: false
  *         error:
- *           message: "You do not have permission to perform this action."
- *           code: "AUTHORIZATION_ERROR"
- *         timestamp: "2026-11-20T20:00:00.000Z"
- *
- *     NotFound:
- *       summary: Resource not found.
- *       value:
- *         success: false
- *         error:
- *           message: "The requested resource could not be found."
- *           code: "NOT_FOUND"
- *         timestamp: "2026-11-20T20:00:00.000Z"
- *
- *     Validation:
- *       summary: Request validation failed.
- *       value:
- *         success: false
- *         error:
- *           message: 'Validation error: Body: "title" is required.'
- *           code: "REQUEST_VALIDATION_FAILED"
- *         timestamp: "2026-11-20T20:00:00.000Z"
+ *           message: "Unauthorized: Token verification failed"
+ *           code: "auth/argument-error"
+ *         timestamp: "2026-11-21T15:30:00.000Z"
  */
