@@ -131,6 +131,18 @@ deckRouter.post("/",
  *                 createdAt: "2026-04-11T15:00:00.000Z"
  *                 updatedAt: "2026-11-21T15:00:00.000Z"
  *               message: "Deck retrieved successfully."
+ *       '403':
+ *         description: Forbidden.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to access this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '404':
  *         description: Deck not found.
  *         content:
@@ -265,9 +277,12 @@ deckRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to modify this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '404':
  *         description: Deck not found.
  *         content:
@@ -345,9 +360,12 @@ deckRouter.put("/:deckId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to delete this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-23T15:53:33.540Z"
  *       '404':
  *         description: Deck not found.
  *         content:

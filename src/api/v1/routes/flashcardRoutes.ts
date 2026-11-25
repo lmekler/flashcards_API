@@ -71,7 +71,7 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *                 id: "flCrd9xK2mPq7vRt"
  *                 deckId: "bwCOdVm9LuiJycWyJNar"
  *                 question: "What is the main function of mitochondria?"
- *                 answer: "Mitochondria produce ATP through cellular respiration, providing energy for the cell."
+ *                 answer: "Known as the powerhouse of the cell, mitochondria produce ATP through cellular respiration."
  *                 isMastered: false
  *                 createdAt: "2026-04-11T16:00:00.000Z"
  *                 updatedAt: "2026-04-11T16:00:00.000Z"
@@ -91,9 +91,12 @@ const flashcardRouter: Router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to modify this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '404':
  *         description: Deck not found.
  *         content:
@@ -182,9 +185,12 @@ flashcardRouter.post("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to view flashcards in this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '404':
  *         description: Flashcard or deck not found.
  *         content:
@@ -283,9 +289,12 @@ flashcardRouter.get("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to view flashcards in this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '404':
  *         description: Deck not found.
  *         content:
@@ -376,9 +385,12 @@ flashcardRouter.get("/",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to modify flashcards in this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-21T15:30:00.000Z"
  *       '404':
  *         description: Flashcard or deck not found.
  *         content:
@@ -473,9 +485,12 @@ flashcardRouter.put("/:cardId",
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               Forbidden:
- *                 $ref: '#/components/examples/Forbidden'
+ *             example:
+ *               success: false
+ *               error:
+ *                 message: "You do not have permission to delete flashcards in this deck"
+ *                 code: "FORBIDDEN"
+ *               timestamp: "2026-11-23T16:00:18.388Z"
  *       '404':
  *         description: Flashcard or deck not found.
  *         content:
